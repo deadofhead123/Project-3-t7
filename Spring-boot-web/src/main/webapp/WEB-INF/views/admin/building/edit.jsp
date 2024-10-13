@@ -335,14 +335,6 @@
                             </div>
                         </div>
 
-                        <!--modified by-->
-                        <div class="form-group">
-                            <label class="col-xs-3">Người sửa</label>
-                            <div class="col-xs-9">
-                                <input type="text" name="modifiedBy" id="modifiedBy" class="form-control">
-                            </div>
-                        </div>
-
                         <!--manager name-->
                         <div class="form-group">
                             <label class="col-xs-3">Tên quản lý</label>

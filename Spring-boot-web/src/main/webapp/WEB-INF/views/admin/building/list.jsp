@@ -65,8 +65,7 @@
                             <div class="widget-main">
                                 <div class="row">
                                     <!--Form tìm kiếm-->
-                                    <form:form modelAttribute="modelSearch" action="/admin/building-list" method="get"
-                                               id="listForm">
+                                    <form:form modelAttribute="modelSearch" action="/admin/building-list" method="get" id="listForm">
                                         <!--Dòng 1-->
                                         <!--Mỗi dòng có 12 cột nên cần trình bày các phần tử sao cho hợp lý,
                                         nếu chia ko đều thì phần tử sẽ bị tràn xuống dòng dưới.
@@ -368,6 +367,7 @@
                         </tr>
                         </thead>
 
+                        <!--Hiển thị danh sách tòa nhà-->
                         <c:forEach var="item" items="${listBuilding}">
                         <tbody>
                         <!--Tòa nhà 1-->
@@ -398,15 +398,16 @@
                                         <i class="ace-icon fa fa-check bigger-120"></i>
                                     </button>
 
-                                    <button type="button" class="btn btn-xs btn-info" title="Sửa tòa nhà">
-                                        <i class="ace-icon fa fa-pencil bigger-120"></i>
-                                    </button>
+                                    <a href="/admin/building-edit">
+                                        <button type="button" class="btn btn-xs btn-info" title="Sửa tòa nhà">
+                                            <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                        </button>
+                                    </a>
 
                                     <button type="button" class="btn btn-xs btn-danger" title="Xóa tòa nhà">
                                         <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                     </button>
                                 </div>
-
                             </td>
                         </tr>
                         </c:forEach>

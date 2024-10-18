@@ -125,7 +125,7 @@
                             <label class="col-xs-3">Loại tòa nhà</label>
                             <div class="col-xs-9">
                                 <!--Để id giống nhau và type là radio thì sẽ chỉ đánh dấu được 1 cái-->
-                                <form:checkboxes path="typeCode" items="${rentType}"/>
+                                <form:checkboxes items="${rentType}" path="typeCode"/>
                             </div>
                         </div>
 
@@ -360,6 +360,12 @@
                                 </button>
 
                                 <!--Cần điền tên URL chứ ko phải tên file-->
+                                <a href="/admin/building-list-${item.id}">
+                                    <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
+                                        nên phải đổi type của button để thực hiện chức năng khác-->
+                                    <button type="button" class="btn btn-danger">Sửa tòa nhà</button>
+                                </a>
+
                                 <a href="/admin/building-list">
                                     <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
                                         nên phải đổi type của button để thực hiện chức năng khác-->

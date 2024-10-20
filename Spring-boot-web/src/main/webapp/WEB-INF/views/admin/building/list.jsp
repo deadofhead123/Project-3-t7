@@ -374,7 +374,7 @@
                         <tr>
                             <td class="center">
                                 <label class="pos-rel">
-                                    <input type="checkbox" class="ace" value="12">
+                                    <input type="checkbox" class="ace" value="${item.id}">
                                     <span class="lbl"></span>
                                 </label>
                             </td>
@@ -393,18 +393,17 @@
 
                             <td>
                                 <div class="hidden-sm hidden-xs btn-group">
-                                    <button type="button" class="btn btn-xs btn-success" title="Giao tòa nhà"
-                                            onclick="assignmentBuilding()">
+                                    <button type="button" class="btn btn-xs btn-success" title="Giao tòa nhà" onclick="assignmentBuilding(${item.id})">
                                         <i class="ace-icon fa fa-check bigger-120"></i>
                                     </button>
 
-                                    <a href="/admin/building-edit">
+                                    <a href="/admin/building-edit-${item.id}">
                                         <button type="button" class="btn btn-xs btn-info" title="Sửa tòa nhà">
                                             <i class="ace-icon fa fa-pencil bigger-120"></i>
                                         </button>
                                     </a>
 
-                                    <button type="button" class="btn btn-xs btn-danger" title="Xóa tòa nhà">
+                                    <button type="button" class="btn btn-xs btn-danger" title="Xóa tòa nhà" onclick="deleteBuilding(${item.id})">
                                         <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                     </button>
                                 </div>
@@ -434,7 +433,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table id="simple-table" class="table table-striped table-bordered table-hover">
+                <table id="listStaffs" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
                         <th>Chọn</th>
@@ -443,27 +442,7 @@
                     </thead>
 
                     <tbody>
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" checked="true">
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
 
-                        <td>Huyền Trang</td>
-                    </tr>
-
-                    <tr>
-                        <td class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" checked="true">
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
-
-                        <td>Minh Ngọc</td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -477,35 +456,110 @@
 
 <!--Hàm gọi tới cái modal fade đã xây dựng-->
 <script>
-    function assignmentBuilding() {
+    function assignmentBuilding(buildingId) {
         // .modal() chính là gọi cái data-dismiss của modal fade đã xây dựng
         $("#assignmentBuildingModal").modal();
+        loadStaffs(buildingId);
     }
 
+    // Lấy ra các nhân viên đang quản lý tòa nhà có id = buildingId
+    function loadStaffs(buildingId){
+        $.ajax({
+            url: "/api/buildings" + "/" + buildingId, // url đang sử dụng
+            type: "GET",
+            // data: JSON.stringify(json),
+            contentType: "application/json",
+            dataType: "JSON",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
+            success: function (result) {
+                alert(result.message);
+
+                // format danh sách các nhân viên đã được lọc
+                var row = '';
+
+                // Nhớ để kiểu dữ liệu của result là JSON đấy, nếu ko là ko truy cập được các thuộc tính của nó đâu:))
+                $.each(result.data, function(index, item){
+                   row += '<tr>';
+                   row += '<td> <input type=checkbox value=' + item.staffId + ' id="checkbox_' + item.staffId + '" ' + item.checked + '/> </td>';
+                   row += '<td>' + item.userName + '</td>';
+                   row += '</tr>';
+                });
+
+                // Hiển thị danh sách đã format, cái listStaffs là biến chỉ đến tbody trong modal fade
+                $('#listStaffs tbody').html(row);
+
+                // alert(result.messages);
+            },
+            error: function (result) {
+                console.log("Lấy thất bại!");
+                alert(result.messages);
+            }
+        });
+    }
+
+    // Nút tìm kiếm
+    $('#btn_searchBuilding').click(function (e) {
+        e.preventDefault();
+
+        // Đẩy các tham số trong các ô lên URL
+        $('#listForm').submit();
+    });
+
+    // Xóa tất cả tòa được đánh dấu
     $('#btn_deleteBuilding').click(function (e) {
         // Ngăn các thao tác mặc định của trình duyệt (gửi tham số lên url...)
         e.preventDefault();
 
         // - Lấy ra id của tòa nhà để xóa
-        //  + Hàm find để tìm ra thẻ chứa giá trị đang cần
-        //  + Hàm map được xây dựng để lấy value của thẻ đó
-        //  + $(this).val(): $(this) chỉ cái kết quả sau find, val() là lấy giá trị
-        //  + Hàm get() để lấy kết quả của việc map vừa rồi
+        //   + Hàm find để tìm ra thẻ chứa giá trị đang cần
+        //   + Hàm map được xây dựng để lấy value của thẻ đó
+        //   + $(this).val(): $(this) chỉ cái kết quả sau find, val() là lấy giá trị
+        //   + Hàm get() để lấy kết quả của việc map vừa rồi
         //
         var buildingIds = $('#buildingList').find('tbody input[type=checkbox]:checked').map(function () {
             return $(this).val();
         }).get();
 
         console.log(buildingIds);
+
+        // Kiểm tra xem đã chọn tòa nhà nào chưa
+        if(buildingIds.length == 0){
+            alert("Chưa chọn tòa nhà cần xóa!");
+        }
+        else{
+            btnDeleteBuilding(buildingIds);
+        }
     });
 
-    // Nút tìm kiếm
-    $('#btn_searchBuilding').click(function (e) {
-        e.preventDefault();
+    // Xóa 1 tòa nhà (bấm cái nút 'x' nhỏ ở cột 'Thao tác')
+    function deleteBuilding(buildingId){
+        // var data = {};
+        // data['buildingIds'] = buildingId;
+        // // btnDeleteBuilding(data); ==> Sai
+        // // Không được truyền mỗi biến data mà phải truyền cái key cụ thể trong data vào
+        // btnDeleteBuilding(data['buildingIds']);
+        btnDeleteBuilding(buildingId);
+    }
 
-        // Đẩy các tham số lên URL
-        $('#listForm').submit();
-    });
+    // Gửi thông tin 1 hoặc các tòa nhà bị xóa về phía server
+    function btnDeleteBuilding(data) {
+        $.ajax({
+            // url: "http://localhost:8081/api/buildings"
+            // Không cần thêm "http://localhost:8081" nữa vì mình đang xài server Tomcat thì nó cung cấp sẵn tên miền "http://localhost:8081" dồi
+            url: "/api/buildings" + "/" + data, // url đang sử dụng
+            type: "DELETE", // HTTP method
+            // data: JSON.stringify(json), // , Phải thực hiện chuyển đổi kiểu dữ liệu của đối tượng "json" để gửi xuống server
+            // contentType: "application/json",  // Kiểu nội dung để gửi cho server
+            dataType: "text",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
+            success: function (result) {
+                console.log("Xóa thành công!");
+                alert(result);
+            },
+            error: function (result) {
+                console.log("Thất bại!");
+                alert("Xóa thất bại!");
+            }
+        });
+    }
 </script>
 </body>
 </html>

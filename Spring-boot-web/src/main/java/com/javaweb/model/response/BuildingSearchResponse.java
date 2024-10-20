@@ -1,11 +1,12 @@
 package com.javaweb.model.response;
 
+import com.javaweb.model.dto.AbstractDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BuildingSearchResponse {
+public class BuildingSearchResponse extends AbstractDTO {
     private String name;
     private String address;
     private Integer numberOfBasement;

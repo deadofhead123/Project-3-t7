@@ -34,6 +34,7 @@ public class BuildingController {
 
         BuildingSearchResponse building1 = new BuildingSearchResponse();
 
+        building1.setId(2L);
         building1.setName("ABC 1");
         building1.setAddress("Đường 1, Quận 2");
         building1.setNumberOfBasement(2);
@@ -46,6 +47,7 @@ public class BuildingController {
 
         BuildingSearchResponse building2 = new BuildingSearchResponse();
 
+        building2.setId(3L);
         building2.setName("ABC 2");
         building2.setAddress("Đường 1, Quận 2");
         building2.setNumberOfBasement(2);
@@ -58,6 +60,23 @@ public class BuildingController {
 
         responses.add(building1);
         responses.add(building2);
+
+        for(Long i = 4L ; i <= 15L ; i++){
+            BuildingSearchResponse newBuilding = new BuildingSearchResponse();
+
+            newBuilding.setId(i);
+            newBuilding.setName("ABC " + Long.toString(i));
+            newBuilding.setAddress("Đường 1, Quận 2");
+            newBuilding.setNumberOfBasement(2);
+            newBuilding.setManagerName("Dana Fairbanks");
+            newBuilding.setManagerPhoneNumber("12345678");
+            newBuilding.setFloorArea(200);
+            newBuilding.setEmptyArea(234);
+            newBuilding.setRentArea("100, 200, 400");
+            newBuilding.setRentPrice(18);
+
+            responses.add(newBuilding);
+        }
 
         modelAndView.addObject("listBuilding", responses);
 
@@ -83,6 +102,7 @@ public class BuildingController {
 
         BuildingDTO buildingDTO = new BuildingDTO();
 
+        buildingDTO.setId(id);
         buildingDTO.setName("ABC 1");
         buildingDTO.setStreet("Trần Phú Street");
         buildingDTO.setLevel("Thấp");

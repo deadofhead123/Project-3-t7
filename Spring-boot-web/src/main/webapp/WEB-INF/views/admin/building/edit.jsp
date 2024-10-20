@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -43,7 +44,8 @@
             <!--Thông tin tòa nhà-->
             <div class="row">
                 <div class="col-xs-12">
-                    <form:form method="get" id="form-edit" modelAttribute="buildingEdit" action="/admin/building-edit">
+                    <form:form method="get" id="form-edit" modelAttribute="buildingEdit">
+                        <input type="hidden" name="id" value="${buildingEdit.id}"/>
                         <!--name building-->
                         <div class="form-group">
                             <label class="col-xs-3">Tên tòa nhà</label>
@@ -67,7 +69,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Quận</label>
                             <div class="col-xs-3">
-                                <form:select path="district" class="form-control"> <!--Cái path này liên quan đến bên BuildingSearchRequest-->
+                                <form:select path="district"
+                                             class="form-control"> <!--Cái path này liên quan đến bên BuildingSearchRequest-->
                                     <form:option value="" label="--Chọn quận--"/>
                                     <form:options items="${district}"/>
                                 </form:select>
@@ -98,7 +101,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Cấu trúc</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="structure" id="structure" class="form-control">--%>
+                                    <%--                                <input type="text" name="structure" id="structure" class="form-control">--%>
                                 <form:input path="structure" class="form-control"/>
                             </div>
                         </div>
@@ -133,7 +136,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Hướng</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="direction" id="direction" class="form-control">--%>
+                                    <%--                                <input type="text" name="direction" id="direction" class="form-control">--%>
                                 <form:input path="direction" class="form-control"/>
                             </div>
                         </div>
@@ -142,7 +145,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Hạng</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="level" id="level" class="form-control">--%>
+                                    <%--                                <input type="text" name="level" id="level" class="form-control">--%>
                                 <form:input path="level" class="form-control"/>
                             </div>
                         </div>
@@ -159,8 +162,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Mô tả giá thuê</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="rentPriceDescription" id="rentPriceDescription"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="text" name="rentPriceDescription" id="rentPriceDescription"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="rentPriceDescription" class="form-control"/>
                             </div>
                         </div>
@@ -169,7 +172,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Phí dịch vụ</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="serviceFee" id="serviceFee" class="form-control">--%>
+                                    <%--                                <input type="text" name="serviceFee" id="serviceFee" class="form-control">--%>
                                 <form:input path="serviceFee" class="form-control"/>
                             </div>
                         </div>
@@ -178,7 +181,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Phí ô tô</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="carFee" id="carFee" class="form-control">--%>
+                                    <%--                                <input type="text" name="carFee" id="carFee" class="form-control">--%>
                                 <form:input path="carFee" class="form-control"/>
                             </div>
                         </div>
@@ -187,7 +190,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Phí xe máy</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="motorbikeFee" id="motorbikeFee" class="form-control">--%>
+                                    <%--                                <input type="text" name="motorbikeFee" id="motorbikeFee" class="form-control">--%>
                                 <form:input path="motorFee" class="form-control"/>
                             </div>
                         </div>
@@ -196,7 +199,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Phí quá giờ</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="overtimeFee" id="overtimeFee" class="form-control">--%>
+                                    <%--                                <input type="text" name="overtimeFee" id="overtimeFee" class="form-control">--%>
                                 <form:input path="overtimeFee" class="form-control"/>
                             </div>
                         </div>
@@ -205,7 +208,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tiền nước</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="waterFee" id="waterFee" class="form-control">--%>
+                                    <%--                                <input type="text" name="waterFee" id="waterFee" class="form-control">--%>
                                 <form:input path="waterFee" class="form-control"/>
                             </div>
                         </div>
@@ -214,8 +217,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tiền điện</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="electricityFee" id="electricityFee"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="text" name="electricityFee" id="electricityFee"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="electricityFee" class="form-control"/>
                             </div>
                         </div>
@@ -224,7 +227,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tiền đặt cọc</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="deposit" id="deposit" class="form-control">--%>
+                                    <%--                                <input type="text" name="deposit" id="deposit" class="form-control">--%>
                                 <form:input path="deposit" class="form-control"/>
                             </div>
                         </div>
@@ -233,7 +236,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tiền thanh toán</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="payment" id="payment" class="form-control">--%>
+                                    <%--                                <input type="text" name="payment" id="payment" class="form-control">--%>
                                 <form:input path="payment" class="form-control"/>
                             </div>
                         </div>
@@ -242,7 +245,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Thời gian thuê</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="rentTime" id="rentTime" class="form-control">--%>
+                                    <%--                                <input type="text" name="rentTime" id="rentTime" class="form-control">--%>
                                 <form:input path="rentTime" class="form-control"/>
                             </div>
                         </div>
@@ -251,8 +254,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Thời gian trang trí</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="decorationTime" id="decorationTime"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="text" name="decorationTime" id="decorationTime"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="decorationTime" class="form-control"/>
                             </div>
                         </div>
@@ -261,7 +264,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Phí môi giới</label>
                             <div class="col-xs-9">
-<%--                                <input type="number" name="brokerageFee" id="brokerageFee" class="form-control">--%>
+                                    <%--                                <input type="number" name="brokerageFee" id="brokerageFee" class="form-control">--%>
                                 <form:input path="brokerageFee" class="form-control"/>
                             </div>
                         </div>
@@ -270,7 +273,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Ghi chú</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="note" id="note" class="form-control">--%>
+                                    <%--                                <input type="text" name="note" id="note" class="form-control">--%>
                                 <form:input path="note" class="form-control"/>
                             </div>
                         </div>
@@ -279,8 +282,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Liên kết tòa nhà</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="linkOfBuilding" id="linkOfBuilding"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="text" name="linkOfBuilding" id="linkOfBuilding"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="buildingDTOs" class="form-control"/>
                             </div>
                         </div>
@@ -356,15 +359,24 @@
                         <div class="form-group">
                             <label class="col-xs-3"></label>
                             <div class="col-xs-9">
-                                <button type="button" class="btn btn-primary" id="btnAddOrUpdateBuilding">Thêm tòa nhà
-                                </button>
+                                <!-- - Vì cái thêm và sửa tòa nhà dùng chung form, nên trong cái form đó mà cả nút thêm tòa nhà và sửa hiện ra thì ko hợp lí lắm.
+                                     - Mong muốn là: ấn sửa thì trong form chỉ hiện ra nút sửa, ấn thêm thì chỉ hiện ra nút thêm
+                                     - Nhận thấy:
+                                       + Khi thêm thì ko gửi id xuống (vì id sẽ tự sinh sau khi tòa nhà được tạo mới)
+                                       + Khi thêm thì gửi id xuống
+                                       -> Ta dựa vào đó xây dựng điều kiện hiển thị nút Thêm và nút Sửa -->
+                                <c:if test="${empty buildingEdit.id}">
+                                    <button type="button" class="btn btn-primary">Thêm tòa nhà</button>
+                                </c:if>
 
-                                <!--Cần điền tên URL chứ ko phải tên file-->
-                                <a href="/admin/building-list-${item.id}">
-                                    <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
-                                        nên phải đổi type của button để thực hiện chức năng khác-->
-                                    <button type="button" class="btn btn-danger">Sửa tòa nhà</button>
-                                </a>
+                                <c:if test="${not empty buildingEdit.id}">
+                                    <!--Cần điền tên URL chứ ko phải tên file-->
+                                    <a href="/admin/building-list-${buildingEdit.id}">
+                                        <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
+                                            nên phải đổi type của button để thực hiện chức năng khác-->
+                                        <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông tin</button>
+                                    </a>
+                                </c:if>
 
                                 <a href="/admin/building-list">
                                     <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
@@ -411,13 +423,11 @@
     // Hàm gửi dữ liệu xuống cho server
     function btnAddOrUpdateBuilding(json) {
         $.ajax({
-            // url: "http://localhost:8081/api/buildings"
-            // Không cần thêm "http://localhost:8081" nữa vì mình đang xài server Tomcat thì nó cung cấp sẵn tên miền "http://localhost:8081" dồi
-            url: "/api/buildings", // url đang sử dụng
-            type: "POST", // HTTP method
-            data: JSON.stringify(json), // , Phải thực hiện chuyển đổi kiểu dữ liệu của đối tượng "json" để gửi xuống server
-            contentType: "application/json",  // Kiểu nội dung để gửi cho server
-            dataType: "text",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
+            url: "/api/buildings",
+            type: "POST",
+            data: JSON.stringify(json),
+            contentType: "application/json",
+            dataType: "text",
             success: function (result) {
                 console.log("Thành công!");
                 alert(result);

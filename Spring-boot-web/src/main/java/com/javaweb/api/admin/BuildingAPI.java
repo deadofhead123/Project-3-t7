@@ -1,15 +1,22 @@
 package com.javaweb.api.admin;
 
 import com.javaweb.entity.UserEntity;
+import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
 import com.javaweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/buildings")
@@ -18,12 +25,36 @@ public class BuildingAPI {
     private UserRepository userRepository;
 
     @PostMapping
-    private Object addOrUpdateBuilding(@RequestBody BuildingDTO buildingDTO){
-        return new String("Được dồi");
+    private ResponseEntity<?> addOrUpdateBuilding(@Valid @RequestBody BuildingDTO buildingDTO,
+                                                  BindingResult bindingResult) {    // khai báo BindingResult để hứng các lỗi
+        try {
+            // Kiểm tra, nếu ko có lỗi gì về field thì tiếp tục làm việc
+            if (bindingResult.hasErrors()) {
+                List<String> errors = bindingResult.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .collect(Collectors.toList());
+
+                ResponseDTO responseDTO = new ResponseDTO();
+                responseDTO.setMessage("Failed");
+                responseDTO.setDetails(errors);
+
+                return ResponseEntity.badRequest().body(responseDTO);
+            }
+
+            return ResponseEntity.ok().body("oke");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
+//    @PostMapping
+//    private String addOrUpdateBuilding(@RequestBody BuildingDTO buildingDTO) {    // khai báo BindingResult để hứng các lỗi
+//       return "Có dữ liệu!";
+//    }
+
     @GetMapping("/{id}")
-    private Object loadStaffs(@PathVariable int id){
+    private Object loadStaffs(@PathVariable int id) {
         // Lấy ra các nhân viên có role là staff
         List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
 
@@ -84,8 +115,15 @@ public class BuildingAPI {
         return responseDTO;
     }
 
+    @PutMapping("/staffs")
+    private Object updateAssignmentBuilding(@RequestBody AssignmentBuildingDTO assignmentBuildingDTO) {
+        // Theo mô hình 3-layer để xử lí tiếp
+        return new String("Test phần giao!");
+    }
+
     @DeleteMapping("/{Ids}")
-    private Object deleteBuilding(@PathVariable String[] Ids){
+    private Object deleteBuilding(@PathVariable String[] Ids) {
+        // Theo mô hình 3-layer để xử lí tiếp
         return new String("Đã xóa");
     }
 }

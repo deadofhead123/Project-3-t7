@@ -65,7 +65,8 @@
                             <div class="widget-main">
                                 <div class="row">
                                     <!--Form tìm kiếm-->
-                                    <form:form modelAttribute="modelSearch" action="/admin/building-list" method="get" id="listForm">
+                                    <form:form modelAttribute="modelSearch" action="/admin/building-list" method="get"
+                                               id="listForm">
                                         <!--Dòng 1-->
                                         <!--Mỗi dòng có 12 cột nên cần trình bày các phần tử sao cho hợp lý,
                                         nếu chia ko đều thì phần tử sẽ bị tràn xuống dòng dưới.
@@ -299,7 +300,7 @@
                                             <div class="col-xs-12">
                                                 <div class="col-xs-6">
                                                     <button type="button" class="btn btn-sm btn-primary"
-                                                            id="btn_searchBuilding">
+                                                            id="btnSearchBuilding">
                                                         <i class="ace-icon glyphicon glyphicon-search"></i>
                                                         Tìm kiếm
                                                     </button>
@@ -328,7 +329,7 @@
                                 </button>
                             </a>
 
-                            <button class="btn btn-app btn-danger btn-sm" title="Xóa tòa nhà" id="btn_deleteBuilding">
+                            <button class="btn btn-app btn-danger btn-sm" title="Xóa tòa nhà" id="btnDeleteBuilding">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                      fill="currentColor" class="bi bi-building-dash" viewBox="0 0 16 16">
                                     <path
@@ -393,7 +394,8 @@
 
                             <td>
                                 <div class="hidden-sm hidden-xs btn-group">
-                                    <button type="button" class="btn btn-xs btn-success" title="Giao tòa nhà" onclick="assignmentBuilding(${item.id})">
+                                    <button type="button" class="btn btn-xs btn-success" title="Giao tòa nhà"
+                                            onclick="assignmentBuilding(${item.id})">
                                         <i class="ace-icon fa fa-check bigger-120"></i>
                                     </button>
 
@@ -403,7 +405,8 @@
                                         </button>
                                     </a>
 
-                                    <button type="button" class="btn btn-xs btn-danger" title="Xóa tòa nhà" onclick="deleteBuilding(${item.id})">
+                                    <button type="button" class="btn btn-xs btn-danger" title="Xóa tòa nhà"
+                                            onclick="deleteBuilding(${item.id})">
                                         <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                     </button>
                                 </div>
@@ -423,6 +426,7 @@
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 </a>
 
+<!--Modal fade: Màn hình phụ hiển thị khi ấn nút nào đó-->
 <div class="modal fade" id="assignmentBuildingModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -433,7 +437,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table id="listStaffs" class="table table-striped table-bordered table-hover">
+                <table id="staffsList" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
                         <th>Chọn</th>
@@ -445,25 +449,35 @@
 
                     </tbody>
                 </table>
+                <!--Gửi id để giao tòa nhà cho nhân viên quản lý-->
+                <input type="hidden" id="buildingId"/>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Giao tòa nhà</button>
+                <button type="button" class="btn btn-primary" id="btnAssignmentBuilding">Giao tòa nhà</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!--Hàm gọi tới cái modal fade đã xây dựng-->
+
 <script>
+    /*
+    --------------------------------------------------- Giao tòa nhà cho nhân viên quản lý ---------------------------------------------------
+     */
+    // Hiện bảng các nhân viên đang quản lý tòa nhà có id này
     function assignmentBuilding(buildingId) {
         // .modal() chính là gọi cái data-dismiss của modal fade đã xây dựng
         $("#assignmentBuildingModal").modal();
+
+        // Gán cái id (vừa gửi xuống để lấy danh sách nhân viên)
+        $('#buildingId').val(buildingId);
+
         loadStaffs(buildingId);
     }
 
     // Lấy ra các nhân viên đang quản lý tòa nhà có id = buildingId
-    function loadStaffs(buildingId){
+    function loadStaffs(buildingId) {
         $.ajax({
             url: "/api/buildings" + "/" + buildingId, // url đang sử dụng
             type: "GET",
@@ -477,15 +491,15 @@
                 var row = '';
 
                 // Nhớ để kiểu dữ liệu của result là JSON đấy, nếu ko là ko truy cập được các thuộc tính của nó đâu:))
-                $.each(result.data, function(index, item){
-                   row += '<tr>';
-                   row += '<td> <input type=checkbox value=' + item.staffId + ' id="checkbox_' + item.staffId + '" ' + item.checked + '/> </td>';
-                   row += '<td>' + item.userName + '</td>';
-                   row += '</tr>';
+                $.each(result.data, function (index, item) {
+                    row += '<tr>';
+                    row += '<td> <input type=checkbox value=' + item.staffId + ' id="checkbox_' + item.staffId + '" ' + item.checked + '/> </td>';
+                    row += '<td>' + item.userName + '</td>';
+                    row += '</tr>';
                 });
 
-                // Hiển thị danh sách đã format, cái listStaffs là biến chỉ đến tbody trong modal fade
-                $('#listStaffs tbody').html(row);
+                // Hiển thị danh sách đã format, cái staffsList là biến chỉ đến tbody trong modal fade
+                $('#staffsList tbody').html(row);
 
                 // alert(result.messages);
             },
@@ -496,16 +510,54 @@
         });
     }
 
+    $('#btnAssignmentBuilding').click(function(e){
+       e.preventDefault();
+
+       var json = {};
+
+       json['id'] = $('#buildingId').val();
+
+       json['staffs'] = $('#staffsList').find('tbody input[type=checkbox]:checked').map(function(){
+           return $(this).val();
+       }).get();
+
+       console.log(json);
+
+       updateAssignmentBuilding(json);
+    });
+
+    // Gửi dữ liệu để cập nhật xuống server
+    function updateAssignmentBuilding(json){
+        $.ajax({
+            url: "/api/buildings/staffs",
+            type: "PUT",
+            data: JSON.stringify(json),
+            contentType: 'application/json',
+            dataType: 'text',
+            success: function(result){
+                alert("Giao thành công!");
+            },
+            error: function(result){
+                alert("Giao thất bại!");
+            }
+        });
+    }
+    /*
+    --------------------------------------------------- Tìm kiếm tòa nhà ---------------------------------------------------
+     */
     // Nút tìm kiếm
-    $('#btn_searchBuilding').click(function (e) {
+    $('#btnSearchBuilding').click(function (e) {
         e.preventDefault();
 
         // Đẩy các tham số trong các ô lên URL
         $('#listForm').submit();
     });
 
+    /*
+    --------------------------------------------------- Xóa tòa nhà ---------------------------------------------------
+     */
     // Xóa tất cả tòa được đánh dấu
-    $('#btn_deleteBuilding').click(function (e) {
+    $('#btnDeleteBuilding').click(function (e) {
         // Ngăn các thao tác mặc định của trình duyệt (gửi tham số lên url...)
         e.preventDefault();
 
@@ -522,16 +574,15 @@
         console.log(buildingIds);
 
         // Kiểm tra xem đã chọn tòa nhà nào chưa
-        if(buildingIds.length == 0){
+        if (buildingIds.length == 0) {
             alert("Chưa chọn tòa nhà cần xóa!");
-        }
-        else{
+        } else {
             btnDeleteBuilding(buildingIds);
         }
     });
 
     // Xóa 1 tòa nhà (bấm cái nút 'x' nhỏ ở cột 'Thao tác')
-    function deleteBuilding(buildingId){
+    function deleteBuilding(buildingId) {
         // var data = {};
         // data['buildingIds'] = buildingId;
         // // btnDeleteBuilding(data); ==> Sai

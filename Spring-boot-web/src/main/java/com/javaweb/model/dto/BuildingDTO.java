@@ -3,6 +3,9 @@ package com.javaweb.model.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,13 +13,19 @@ import java.util.Map;
 @Getter
 @Setter
 public class BuildingDTO extends AbstractDTO{
+    @NotBlank(message = "Tên tòa nhà không được để trống!") // Liên quan đến phần Validate
     private String name;
     private String street;
     private String ward;
     private String district;
+
+    @Min(value = 0, message = "Số tầng hầm phải là số dương")
     private Long numberOfBasement;
     private Long floorArea;
     private String level;
+
+//    @NotNull(message = "typeCode không được rỗng!")
+    @Size(min = 1, message = "Phải có nhiều hơn 1 typeCode")
     private List<String> typeCode;
     private String overtimeFee;
     private String electricityFee;

@@ -60,8 +60,7 @@
                                 <!--Dùng form:input hay hơn input thường vì:
                                     + ko cần set kiểu dữ liệu (kiểu dữ liệu sẽ tự biến đổi)
                                     + ko cần set "name" và "value" -->
-                                <form:input class="form-control"
-                                            placeholder="Gõ tên tòa nhà..." path="name"/>
+                                <form:input path="name" class="form-control" placeholder="Gõ tên tòa nhà..."/>
                             </div>
                         </div>
 
@@ -110,8 +109,9 @@
                         <div class="form-group">
                             <label class="col-xs-3">Số tầng hầm</label>
                             <div class="col-xs-9">
-                                <input type="number" name="numberOfBasement" id="numberOfBasement"
-                                       class="form-control">
+<%--                                <input type="number" name="numberOfBasement" id="numberOfBasement"--%>
+<%--                                       class="form-control">--%>
+                                <form:input path="numberOfBasement" class="form-control"/>
                             </div>
                         </div>
 
@@ -119,7 +119,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Diện tích sàn</label>
                             <div class="col-xs-9">
-                                <input type="number" name="floorArea" id="floorArea" class="form-control">
+<%--                                <input type="number" name="floorArea" id="floorArea" class="form-control">--%>
+                                <form:input path="floorArea" class="form-control"/>
                             </div>
                         </div>
 
@@ -154,7 +155,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Giá thuê</label>
                             <div class="col-xs-9">
-                                <input type="number" name="rentPrice" id="rentPrice" class="form-control">
+<%--                                <input type="number" name="rentPrice" id="rentPrice" class="form-control">--%>
+                                <form:input path="rentPrice" class="form-control"/>
                             </div>
                         </div>
 
@@ -342,7 +344,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tên quản lý</label>
                             <div class="col-xs-9">
-                                <input type="text" name="managerName" id="managerName" class="form-control">
+<%--                                <input type="text" name="managerName" id="managerName" class="form-control">--%>
+                                <form:input path="managerName" class="form-control"/>
                             </div>
                         </div>
 
@@ -350,8 +353,9 @@
                         <div class="form-group">
                             <label class="col-xs-3">SĐT quản lý</label>
                             <div class="col-xs-9">
-                                <input type="text" name="managerPhoneNumber" id="managerPhoneNumber"
-                                       class="form-control">
+<%--                                <input type="text" name="managerPhoneNumber" id="managerPhoneNumber"--%>
+<%--                                       class="form-control">--%>
+                                <form:input path="managerPhoneNumber" class="form-control"/>
                             </div>
                         </div>
 
@@ -366,16 +370,11 @@
                                        + Khi thêm thì gửi id xuống
                                        -> Ta dựa vào đó xây dựng điều kiện hiển thị nút Thêm và nút Sửa -->
                                 <c:if test="${empty buildingEdit.id}">
-                                    <button type="button" class="btn btn-primary">Thêm tòa nhà</button>
+                                    <button type="button" class="btn btn-primary" id="btnAddOrUpdateBuilding">Thêm tòa nhà</button>
                                 </c:if>
 
                                 <c:if test="${not empty buildingEdit.id}">
-                                    <!--Cần điền tên URL chứ ko phải tên file-->
-                                    <a href="/admin/building-list-${buildingEdit.id}">
-                                        <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
-                                            nên phải đổi type của button để thực hiện chức năng khác-->
-                                        <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông tin</button>
-                                    </a>
+                                    <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông tin</button>
                                 </c:if>
 
                                 <a href="/admin/building-list">
@@ -410,31 +409,39 @@
         $.each(formData, function (i, v) {
             // Nếu không lưu type code vào 1 mảng thì khi tích nhiều, sẽ chỉ lưu được 1 giá trị
             if (v.name == "typeCode") typeCode.push(v.value);
-            else json["'" + v.name + "'"] = v.value;
+            else if(v.name == "buildingDTOs") v.value = [];
+            else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
         });
 
-        json["'typeCode'"] = typeCode;
+        json['typeCode'] = typeCode;
 
-        btnAddOrUpdateBuilding(json);
         console.log(json);
+        addOrUpdateBuilding(json);
     });
 
     // Hàm cho nút "Thêm tòa nhà"
     // Hàm gửi dữ liệu xuống cho server
-    function btnAddOrUpdateBuilding(json) {
+    function addOrUpdateBuilding(json) {
         $.ajax({
             url: "/api/buildings",
             type: "POST",
             data: JSON.stringify(json),
-            contentType: "application/json",
-            dataType: "text",
-            success: function (result) {
-                console.log("Thành công!");
-                alert(result);
+            contentType: 'application/json',
+            // dataType: 'JSON',
+            success: function(result){
+                console.log(result);
+                alert("Thêm thành công!");
             },
-            error: function (result) {
-                console.log("Thất bại!");
-                alert("Thêm mới thất bại!");
+            error: function(result){
+                console.log(result);
+
+                var row = '';
+
+                $.each(result.responseJSON.details, function(index, item){
+                   row += item + "\n";
+                });
+
+                alert(row);
             }
         });
     }

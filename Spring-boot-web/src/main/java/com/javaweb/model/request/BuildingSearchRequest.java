@@ -1,7 +1,5 @@
 package com.javaweb.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.javaweb.model.dto.AbstractDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +7,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BuildingSearchRequest extends AbstractDTO{
-    @JsonProperty("nameBuilding")
+public class BuildingSearchRequest{
     private String name;
-
     private Integer floorArea;
     private String district;
     private String ward;
@@ -25,7 +21,7 @@ public class BuildingSearchRequest extends AbstractDTO{
     private Integer rentPriceFrom;
     private Integer rentPriceTo;
     private String managerName;
-    private String managerPhoneNumber;
+    private String managerPhone;
     private Integer staffId;
     private List<String> typeCode;
 }

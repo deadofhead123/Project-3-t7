@@ -4,7 +4,7 @@ import com.javaweb.enums.buildingRentType;
 import com.javaweb.enums.districtCode;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
-import com.javaweb.model.response.BuildingSearchResponse;
+import com.javaweb.service.IBuildingService;
 import com.javaweb.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +21,12 @@ public class BuildingController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private IBuildingService buildingService;
+
+    // - Tìm kiếm tòa nhà
+    //   + Khi ấn nút "Tìm kiếm" thì các field sẽ được submit lên, và cái params được điền các field đó
+    //   (Do các field map trực tiếp với các field, xem trong file "list.jsp")
     @GetMapping(value = "/admin/building-list") // ModelAndView ko cho truy xuất quá 3 bậc
     private ModelAndView buildingList(@ModelAttribute(name = "modelSearch") BuildingSearchRequest params) {
         ModelAndView modelAndView = new ModelAndView("admin/building/list");
@@ -30,55 +36,8 @@ public class BuildingController {
         modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
         modelAndView.addObject("staffs", userService.allStaff());
 
-        List<BuildingSearchResponse> responses = new ArrayList<BuildingSearchResponse>();
-
-        BuildingSearchResponse building1 = new BuildingSearchResponse();
-
-        building1.setId(2L);
-        building1.setName("ABC 1");
-        building1.setAddress("Đường 1, Quận 2");
-        building1.setNumberOfBasement(2);
-        building1.setManagerName("Bette Porter");
-        building1.setManagerPhoneNumber("12345678");
-        building1.setFloorArea(200);
-        building1.setEmptyArea(234);
-        building1.setRentArea("100, 200, 400");
-        building1.setRentPrice(18);
-
-        BuildingSearchResponse building2 = new BuildingSearchResponse();
-
-        building2.setId(3L);
-        building2.setName("ABC 2");
-        building2.setAddress("Đường 1, Quận 2");
-        building2.setNumberOfBasement(2);
-        building2.setManagerName("Tina Kennard");
-        building2.setManagerPhoneNumber("12345678");
-        building2.setFloorArea(200);
-        building2.setEmptyArea(234);
-        building2.setRentArea("100, 200, 400");
-        building2.setRentPrice(18);
-
-        responses.add(building1);
-        responses.add(building2);
-
-        for(Long i = 4L ; i <= 15L ; i++){
-            BuildingSearchResponse newBuilding = new BuildingSearchResponse();
-
-            newBuilding.setId(i);
-            newBuilding.setName("ABC " + Long.toString(i));
-            newBuilding.setAddress("Đường 1, Quận 2");
-            newBuilding.setNumberOfBasement(2);
-            newBuilding.setManagerName("Dana Fairbanks");
-            newBuilding.setManagerPhoneNumber("12345678");
-            newBuilding.setFloorArea(200);
-            newBuilding.setEmptyArea(234);
-            newBuilding.setRentArea("100, 200, 400");
-            newBuilding.setRentPrice(18);
-
-            responses.add(newBuilding);
-        }
-
-        modelAndView.addObject("listBuilding", responses);
+        // Kết quả tìm kiếm
+        modelAndView.addObject("listBuilding", buildingService.findAll(params));
 
         return modelAndView;
     }

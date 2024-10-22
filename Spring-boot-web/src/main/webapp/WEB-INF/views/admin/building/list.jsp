@@ -65,8 +65,8 @@
                             <div class="widget-main">
                                 <div class="row">
                                     <!--Form tìm kiếm-->
-                                    <form:form modelAttribute="modelSearch" action="/admin/building-list" method="get"
-                                               id="listForm">
+                                    <form:form id="listForm" modelAttribute="modelSearch" action="/admin/building-list"
+                                               method="get">
                                         <!--Dòng 1-->
                                         <!--Mỗi dòng có 12 cột nên cần trình bày các phần tử sao cho hợp lý,
                                         nếu chia ko đều thì phần tử sẽ bị tràn xuống dòng dưới.
@@ -245,14 +245,14 @@
                                                     </div>
                                                 </div>
 
-                                                <!--Phần tìm kiếm theo "managerPhoneNumber"-->
+                                                <!--Phần tìm kiếm theo "managerPhone"-->
                                                 <div class="col-xs-4">
                                                     <div>
                                                         <label>SĐT Quản lý</label>
                                                             <%--                                                        <input type="text" name="managerPhoneNumber"--%>
                                                             <%--                                                               class="form-control"--%>
                                                             <%--                                                               value="${modelSearch.managerPhoneNumber}">--%>
-                                                        <form:input path="managerPhoneNumber" class="form-control"/>
+                                                        <form:input path="managerPhone" class="form-control"/>
                                                     </div>
                                                 </div>
 
@@ -298,12 +298,18 @@
                                         <!--Dòng 7-->
                                         <div class="form-group">
                                             <div class="col-xs-12">
-                                                <div class="col-xs-6">
+                                                <!--Nút tìm kiếm-->
+                                                <div class="col-xs-2">
                                                     <button type="button" class="btn btn-sm btn-primary"
                                                             id="btnSearchBuilding">
                                                         <i class="ace-icon glyphicon glyphicon-search"></i>
                                                         Tìm kiếm
                                                     </button>
+                                                </div>
+
+                                                <!--Nút xóa (reset hết các field tìm kiếm)-->
+                                                <div class="col-xs-2">
+                                                    <button type="reset" class="btn btn-sm btn-primary">Xóa</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -463,6 +469,17 @@
 
 <script>
     /*
+    --------------------------------------------------- Tìm kiếm tòa nhà ---------------------------------------------------
+     */
+    // Nút tìm kiếm
+    $('#btnSearchBuilding').click(function (e) {
+        e.preventDefault();
+
+        // Đẩy các tham số trong các ô lên URL, và gán chúng cho cái đối tượng để hứng (ModelAttribute)
+        $('#listForm').submit();
+    });
+
+    /*
     --------------------------------------------------- Giao tòa nhà cho nhân viên quản lý ---------------------------------------------------
      */
     // Hiện bảng các nhân viên đang quản lý tòa nhà có id này
@@ -510,48 +527,38 @@
         });
     }
 
-    $('#btnAssignmentBuilding').click(function(e){
-       e.preventDefault();
+    $('#btnAssignmentBuilding').click(function (e) {
+        e.preventDefault();
 
-       var json = {};
+        var json = {};
 
-       json['id'] = $('#buildingId').val();
+        json['id'] = $('#buildingId').val();
 
-       json['staffs'] = $('#staffsList').find('tbody input[type=checkbox]:checked').map(function(){
-           return $(this).val();
-       }).get();
+        json['staffs'] = $('#staffsList').find('tbody input[type=checkbox]:checked').map(function () {
+            return $(this).val();
+        }).get();
 
-       console.log(json);
+        console.log(json);
 
-       updateAssignmentBuilding(json);
+        updateAssignmentBuilding(json);
     });
 
     // Gửi dữ liệu để cập nhật xuống server
-    function updateAssignmentBuilding(json){
+    function updateAssignmentBuilding(json) {
         $.ajax({
             url: "/api/buildings/staffs",
             type: "PUT",
             data: JSON.stringify(json),
             contentType: 'application/json',
             dataType: 'text',
-            success: function(result){
+            success: function (result) {
                 alert("Giao thành công!");
             },
-            error: function(result){
+            error: function (result) {
                 alert("Giao thất bại!");
             }
         });
     }
-    /*
-    --------------------------------------------------- Tìm kiếm tòa nhà ---------------------------------------------------
-     */
-    // Nút tìm kiếm
-    $('#btnSearchBuilding').click(function (e) {
-        e.preventDefault();
-
-        // Đẩy các tham số trong các ô lên URL
-        $('#listForm').submit();
-    });
 
     /*
     --------------------------------------------------- Xóa tòa nhà ---------------------------------------------------

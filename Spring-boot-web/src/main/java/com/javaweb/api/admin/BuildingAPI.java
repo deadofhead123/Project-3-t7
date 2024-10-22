@@ -6,6 +6,7 @@ import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
 import com.javaweb.repository.UserRepository;
+import com.javaweb.service.impl.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +25,15 @@ public class BuildingAPI {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BuildingService buildingService;
+
     @PostMapping
-    private ResponseEntity<?> addOrUpdateBuilding(@Valid @RequestBody BuildingDTO buildingDTO,
-                                                  BindingResult bindingResult) {    // khai báo BindingResult để hứng các lỗi
+    private ResponseEntity<?> addOrUpdateBuilding(@Valid @RequestBody BuildingDTO buildingDTO, BindingResult bindingResult) {    // khai báo BindingResult để hứng các lỗi
         try {
             // Kiểm tra, nếu ko có lỗi gì về field thì tiếp tục làm việc
             if (bindingResult.hasErrors()) {
-                List<String> errors = bindingResult.getFieldErrors()
-                        .stream()
-                        .map(FieldError::getDefaultMessage)
-                        .collect(Collectors.toList());
+                List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
 
                 ResponseDTO responseDTO = new ResponseDTO();
                 responseDTO.setMessage("Failed");
@@ -47,11 +47,6 @@ public class BuildingAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-//    @PostMapping
-//    private String addOrUpdateBuilding(@RequestBody BuildingDTO buildingDTO) {    // khai báo BindingResult để hứng các lỗi
-//       return "Có dữ liệu!";
-//    }
 
     @GetMapping("/{id}")
     private Object loadStaffs(@PathVariable int id) {

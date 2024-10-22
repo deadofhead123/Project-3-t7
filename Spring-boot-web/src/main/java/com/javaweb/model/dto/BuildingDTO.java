@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ public class BuildingDTO extends AbstractDTO{
     private String level;
 
 //    @NotNull(message = "typeCode không được rỗng!")
-    @Size(min = 1, message = "Phải có nhiều hơn 1 typeCode")
+//    @Size(min = 1, message = "Phải có nhiều hơn 1 typeCode")
     private List<String> typeCode;
     private String overtimeFee;
     private String electricityFee;

@@ -1,5 +1,17 @@
 package com.javaweb.service;
 
-public interface IBuildingService {
+import com.javaweb.model.dto.BuildingDTO;
+import com.javaweb.model.request.BuildingSearchRequest;
+import com.javaweb.model.response.BuildingSearchResponse;
 
+import java.util.List;
+
+public interface IBuildingService {
+    List<BuildingSearchResponse> findAll(BuildingSearchRequest request);
+
+    // Thêm mới hoặc cập nhật tòa nhà
+    String addOrUpdateBuilding(BuildingDTO building);
+
+    // Xóa các tòa nhà
+    String deleteBuilding(Integer[] listId);
 }

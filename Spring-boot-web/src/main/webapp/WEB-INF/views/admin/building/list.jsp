@@ -480,6 +480,65 @@
     });
 
     /*
+    --------------------------------------------------- Xóa tòa nhà ---------------------------------------------------
+     */
+    // Xóa tất cả tòa được đánh dấu
+    $('#btnDeleteBuilding').click(function (e) {
+        // Ngăn các thao tác mặc định của trình duyệt (gửi tham số lên url...)
+        e.preventDefault();
+
+        // - Lấy ra id của tòa nhà để xóa
+        //   + Hàm find để tìm ra thẻ chứa giá trị đang cần
+        //   + Hàm map được xây dựng để lấy value của thẻ đó
+        //   + $(this).val(): $(this) chỉ cái kết quả sau find, val() là lấy giá trị
+        //   + Hàm get() để lấy kết quả của việc map vừa rồi
+        //
+        var buildingIds = $('#buildingList').find('tbody input[type=checkbox]:checked').map(function () {
+            return $(this).val();
+        }).get();
+
+        console.log(buildingIds);
+
+        // Kiểm tra xem đã chọn tòa nhà nào chưa
+        if (buildingIds.length == 0) {
+            alert("Chưa chọn tòa nhà cần xóa!");
+        } else {
+            btnDeleteBuilding(buildingIds);
+        }
+    });
+
+    // Xóa 1 tòa nhà (bấm cái nút 'x' nhỏ ở cột 'Thao tác')
+    function deleteBuilding(buildingId) {
+        // var data = {};
+        // data['buildingIds'] = buildingId;
+        // // btnDeleteBuilding(data); ==> Sai
+        // // Không được truyền mỗi biến data mà phải truyền cái key cụ thể trong data vào
+        // btnDeleteBuilding(data['buildingIds']);
+        btnDeleteBuilding(buildingId);
+    }
+
+    // Gửi thông tin 1 hoặc các tòa nhà bị xóa về phía server
+    function btnDeleteBuilding(data) {
+        $.ajax({
+            // url: "http://localhost:8081/api/buildings"
+            // Không cần thêm "http://localhost:8081" nữa vì mình đang xài server Tomcat thì nó cung cấp sẵn tên miền "http://localhost:8081" dồi
+            url: "/api/buildings" + "/" + data, // url đang sử dụng
+            type: "DELETE", // HTTP method
+            // data: JSON.stringify(json), // , Phải thực hiện chuyển đổi kiểu dữ liệu của đối tượng "json" để gửi xuống server
+            // contentType: "application/json",  // Kiểu nội dung để gửi cho server
+            dataType: "text",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
+            success: function (result) {
+                console.log("Xóa thành công!");
+                alert(result);
+            },
+            error: function (result) {
+                console.log("Thất bại!");
+                alert("Xóa thất bại!");
+            }
+        });
+    }
+
+    /*
     --------------------------------------------------- Giao tòa nhà cho nhân viên quản lý ---------------------------------------------------
      */
     // Hiện bảng các nhân viên đang quản lý tòa nhà có id này
@@ -556,65 +615,6 @@
             },
             error: function (result) {
                 alert("Giao thất bại!");
-            }
-        });
-    }
-
-    /*
-    --------------------------------------------------- Xóa tòa nhà ---------------------------------------------------
-     */
-    // Xóa tất cả tòa được đánh dấu
-    $('#btnDeleteBuilding').click(function (e) {
-        // Ngăn các thao tác mặc định của trình duyệt (gửi tham số lên url...)
-        e.preventDefault();
-
-        // - Lấy ra id của tòa nhà để xóa
-        //   + Hàm find để tìm ra thẻ chứa giá trị đang cần
-        //   + Hàm map được xây dựng để lấy value của thẻ đó
-        //   + $(this).val(): $(this) chỉ cái kết quả sau find, val() là lấy giá trị
-        //   + Hàm get() để lấy kết quả của việc map vừa rồi
-        //
-        var buildingIds = $('#buildingList').find('tbody input[type=checkbox]:checked').map(function () {
-            return $(this).val();
-        }).get();
-
-        console.log(buildingIds);
-
-        // Kiểm tra xem đã chọn tòa nhà nào chưa
-        if (buildingIds.length == 0) {
-            alert("Chưa chọn tòa nhà cần xóa!");
-        } else {
-            btnDeleteBuilding(buildingIds);
-        }
-    });
-
-    // Xóa 1 tòa nhà (bấm cái nút 'x' nhỏ ở cột 'Thao tác')
-    function deleteBuilding(buildingId) {
-        // var data = {};
-        // data['buildingIds'] = buildingId;
-        // // btnDeleteBuilding(data); ==> Sai
-        // // Không được truyền mỗi biến data mà phải truyền cái key cụ thể trong data vào
-        // btnDeleteBuilding(data['buildingIds']);
-        btnDeleteBuilding(buildingId);
-    }
-
-    // Gửi thông tin 1 hoặc các tòa nhà bị xóa về phía server
-    function btnDeleteBuilding(data) {
-        $.ajax({
-            // url: "http://localhost:8081/api/buildings"
-            // Không cần thêm "http://localhost:8081" nữa vì mình đang xài server Tomcat thì nó cung cấp sẵn tên miền "http://localhost:8081" dồi
-            url: "/api/buildings" + "/" + data, // url đang sử dụng
-            type: "DELETE", // HTTP method
-            // data: JSON.stringify(json), // , Phải thực hiện chuyển đổi kiểu dữ liệu của đối tượng "json" để gửi xuống server
-            // contentType: "application/json",  // Kiểu nội dung để gửi cho server
-            dataType: "text",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
-            success: function (result) {
-                console.log("Xóa thành công!");
-                alert(result);
-            },
-            error: function (result) {
-                console.log("Thất bại!");
-                alert("Xóa thất bại!");
             }
         });
     }

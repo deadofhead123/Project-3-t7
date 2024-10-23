@@ -9,6 +9,8 @@ import java.util.List;
 public interface IBuildingService {
     List<BuildingSearchResponse> findAll(BuildingSearchRequest request);
 
+    BuildingDTO findOneBuildingById(Long id);
+
     // Thêm mới hoặc cập nhật tòa nhà
     String addOrUpdateBuilding(BuildingDTO building);
 

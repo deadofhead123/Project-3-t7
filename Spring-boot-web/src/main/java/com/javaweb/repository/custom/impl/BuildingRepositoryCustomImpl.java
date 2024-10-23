@@ -10,7 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
@@ -130,7 +129,7 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         List<String> typeCode = buildingSearchRequest.getTypeCode();
         // TypeCode, xây dựng theo kiểu của Java 8
         if (typeCode != null && typeCode.size() != 0) {
-            where.append(" AND b.type LIKE '%" + typeCode.stream().collect( Collectors.joining(",") ) + "%'");
+            where.append(" AND b.type LIKE '%" + String.join(",", typeCode) + "%'");
         }
     }
 

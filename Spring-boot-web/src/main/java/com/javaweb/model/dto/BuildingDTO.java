@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,18 +15,29 @@ import java.util.Map;
 public class BuildingDTO extends AbstractDTO{
     @NotBlank(message = "Tên tòa nhà không được để trống!") // Liên quan đến phần Validate
     private String name;
+
+    @NotBlank(message = "Tên đường không được để trống!")
     private String street;
+
+    @NotBlank(message = "Tên phường không được để trống!")
     private String ward;
+
+    @NotBlank(message = "Tên quận không được để trống!")
     private String district;
 
-    @Min(value = 0, message = "Số tầng hầm phải là số dương")
+    @NotBlank(message = "Số tầng hầm không được để trống!")
+    @Min(value = 0, message = "Số tầng hầm phải là số dương!")
     private Long numberOfBasement;
+
+    @Min(value = 0, message = "Diện tích sàn phải là số dương!")
     private Long floorArea;
+
     private String level;
 
 //    @NotNull(message = "typeCode không được rỗng!")
-//    @Size(min = 1, message = "Phải có nhiều hơn 1 typeCode")
+    @Size(min = 1, message = "Phải có ít nhất 1 typeCode")
     private List<String> typeCode;
+
     private String overtimeFee;
     private String electricityFee;
     private String deposit;
@@ -38,10 +50,17 @@ public class BuildingDTO extends AbstractDTO{
     private String structure;
     private String direction;
     private String note;
+
+    @NotBlank(message = "Diện tích thuê không được để trống!")
+    @Min(value = 0, message = "Diện tích thuê phải là số dương!")
     private Long rentArea;
+
     private String managerName;
     private String managerPhoneNumber;
+
+    @Min(value = 0, message = "Giá thuê phải là số dương")
     private Long rentPrice;
+
     private String serviceFee;
     private double brokerageFee;
     private String image;

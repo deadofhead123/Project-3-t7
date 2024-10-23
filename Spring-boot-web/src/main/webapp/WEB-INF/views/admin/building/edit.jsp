@@ -151,6 +151,15 @@
                             </div>
                         </div>
 
+                        <!--rent area-->
+                        <div class="form-group">
+                            <label class="col-xs-3">Diện tích thuê</label>
+                            <div class="col-xs-9">
+                                    <%--                                <input type="number" name="rentPrice" id="rentPrice" class="form-control">--%>
+                                <form:input path="rentArea" class="form-control"/>
+                            </div>
+                        </div>
+
                         <!--rent price-->
                         <div class="form-group">
                             <label class="col-xs-3">Giá thuê</label>
@@ -306,40 +315,6 @@
                             </div>
                         </div>
 
-                        <!--created date-->
-                        <div class="form-group">
-                            <label class="col-xs-3">Ngày tạo</label>
-                            <div class="col-xs-3">
-                                <input type="datetime-local" name="createdDate" id="createdDate"
-                                       class="form-control">
-                            </div>
-                        </div>
-
-                        <!--modified date-->
-                        <div class="form-group">
-                            <label class="col-xs-3">Ngày sửa</label>
-                            <div class="col-xs-3">
-                                <input type="datetime-local" name="modifiedDate" id="modifiedDate"
-                                       class="form-control">
-                            </div>
-                        </div>
-
-                        <!--created by-->
-                        <div class="form-group">
-                            <label class="col-xs-3">Người tạo</label>
-                            <div class="col-xs-9">
-                                <input type="text" name="createdBy" id="createdBy" class="form-control">
-                            </div>
-                        </div>
-
-                        <!--modified by-->
-                        <div class="form-group">
-                            <label class="col-xs-3">Người sửa</label>
-                            <div class="col-xs-9">
-                                <input type="text" name="modifiedBy" id="modifiedBy" class="form-control">
-                            </div>
-                        </div>
-
                         <!--manager name-->
                         <div class="form-group">
                             <label class="col-xs-3">Tên quản lý</label>
@@ -427,10 +402,10 @@
             type: "POST",
             data: JSON.stringify(json),
             contentType: 'application/json',
-            // dataType: 'JSON',
+            dataType: 'JSON',
             success: function(result){
                 console.log(result);
-                alert("Thêm thành công!");
+                alert(result.message);
             },
             error: function(result){
                 console.log(result);

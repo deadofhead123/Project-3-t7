@@ -2,11 +2,14 @@ package com.javaweb.service.impl;
 
 import com.javaweb.converter.BuildingConverter;
 import com.javaweb.entity.BuildingEntity;
+import com.javaweb.entity.RentAreaEntity;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
 import com.javaweb.repository.BuildingRepository;
+import com.javaweb.repository.RentAreaRepository;
 import com.javaweb.service.IBuildingService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,12 @@ public class BuildingService implements IBuildingService {
 
     @Autowired
     private BuildingConverter buildingConverter;
+
+    @Autowired
+    private RentAreaRepository rentAreaRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public List<BuildingSearchResponse> findAll(BuildingSearchRequest buildingSearchRequest) {
@@ -37,8 +46,74 @@ public class BuildingService implements IBuildingService {
     }
 
     @Override
+    public BuildingDTO findOneBuildingById(Long id) {
+        BuildingEntity buildingEntity = buildingRepository.findOneBuildingById(id);
+
+        BuildingDTO buildingDTO = modelMapper.map(buildingEntity, BuildingDTO.class);
+
+        return buildingDTO;
+    }
+
+    @Override
     public String addOrUpdateBuilding(BuildingDTO building) {
-        return "";
+        BuildingEntity editBuilding = new BuildingEntity();
+        String result = "";
+
+        // Thêm mới thì ko cần id
+        if(building.getId() == null) {
+            editBuilding = modelMapper.map(building, BuildingEntity.class);
+
+            editBuilding.setType(String.join(",", building.getTypeCode()));
+
+            buildingRepository.save(editBuilding);
+
+            // Khi này building mới thêm có id rồi, thì save rentArea vào
+            // + Nếu save rentArea trước thì sẽ lỗi ngay :))
+            RentAreaEntity rentAreaEntity = new RentAreaEntity();
+
+            if(building.getRentArea() != null){
+                rentAreaEntity.setBuildingEntity(editBuilding);
+                rentAreaEntity.setValue( building.getRentArea().intValue() );
+            }
+
+            rentAreaRepository.save(rentAreaEntity);
+
+            result = "Thêm mới thành công!";
+        }
+        // Cập nhật
+//        else {
+//            editBuilding = buildingRepository.getOne( building.getId() );
+//
+//            if(editBuilding != null) {
+//                // Xóa các rentArea cũ để tránh bị trùng
+//                rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
+//
+//                // Cập nhật thông tin của building
+////                editBuilding.setName( building.getName() );
+////                editBuilding.setFloorArea( building.getFloorArea() );
+////                editBuilding.setWard( building.getWard() );
+////                editBuilding.setNumberOfBasement( building.getNumberOfBasement() );
+////                newBuilding.setRentPrice( building.getRentPrice() );
+////                newBuilding.setDistrict( districtRepository.getOne( building.getDistrictId() ) );
+//
+//                buildingRepository.save(newBuilding);
+//
+//                for(String it : building.getTypeCode()) {
+//                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
+//
+//                    rentAreaEntity.setBuildingEntity(newBuilding);
+//                    rentAreaEntity.setValue( Integer.parseInt(it) );
+//
+//                    rentAreaRepository.save(rentAreaEntity);
+//                }
+//
+//                return "Cập nhật thành công!";
+//            }
+//            else {
+//                return "Cập nhật thất bại do ko thấy tòa nhà có id = " + building.getId();
+//            }
+//        }
+        return result;
     }
 
     @Override

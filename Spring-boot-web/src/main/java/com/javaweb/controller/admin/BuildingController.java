@@ -2,7 +2,6 @@ package com.javaweb.controller.admin;
 
 import com.javaweb.enums.buildingRentType;
 import com.javaweb.enums.districtCode;
-import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.service.IBuildingService;
 import com.javaweb.service.IUserService;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController(value = "buildingControllerOfAdmin")
 public class BuildingController {
@@ -42,15 +38,15 @@ public class BuildingController {
         return modelAndView;
     }
 
-    @GetMapping(value = "/admin/building-edit")
-    private ModelAndView buildingEdit(@ModelAttribute(name = "buildingEdit") BuildingDTO params) {
-        ModelAndView modelAndView = new ModelAndView("admin/building/edit");
-
-        modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
-        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
-
-        return modelAndView;
-    }
+//    @GetMapping(value = "/admin/building-edit")
+//    private ModelAndView buildingEdit(@ModelAttribute(name = "buildingEdit") BuildingDTO params) {
+//        ModelAndView modelAndView = new ModelAndView("admin/building/edit");
+//
+//        modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
+//        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
+//
+//        return modelAndView;
+//    }
 
     @GetMapping(value = "/admin/building-edit-{id}")
     private ModelAndView buildingEdit(@PathVariable Long id) {
@@ -58,21 +54,7 @@ public class BuildingController {
 
         modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
         modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
-
-        BuildingDTO buildingDTO = new BuildingDTO();
-
-        buildingDTO.setId(id);
-        buildingDTO.setName("ABC 1");
-        buildingDTO.setStreet("Trần Phú Street");
-        buildingDTO.setLevel("Thấp");
-
-        List<String> tC = new ArrayList<>();
-        tC.add("NOI_THAT");
-        tC.add("NGUYEN_CAN");
-
-        buildingDTO.setTypeCode(tC);
-
-        modelAndView.addObject("buildingEdit", buildingDTO);
+        modelAndView.addObject("buildingEdit", buildingService.findOneBuildingById(id));
 
         return modelAndView;
     }

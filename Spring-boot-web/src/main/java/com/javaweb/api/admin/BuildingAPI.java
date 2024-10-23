@@ -28,24 +28,29 @@ public class BuildingAPI {
     @Autowired
     private BuildingService buildingService;
 
+    // Thêm tòa nhà
     @PostMapping
     private ResponseEntity<?> addOrUpdateBuilding(@Valid @RequestBody BuildingDTO buildingDTO, BindingResult bindingResult) {    // khai báo BindingResult để hứng các lỗi
+        ResponseDTO responseDTO = new ResponseDTO();
+
         try {
             // Kiểm tra, nếu ko có lỗi gì về field thì tiếp tục làm việc
             if (bindingResult.hasErrors()) {
                 List<String> errors = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
 
-                ResponseDTO responseDTO = new ResponseDTO();
                 responseDTO.setMessage("Failed");
                 responseDTO.setDetails(errors);
 
                 return ResponseEntity.badRequest().body(responseDTO);
             }
 
-            return ResponseEntity.ok().body("oke");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+
+        responseDTO.setMessage(buildingService.addOrUpdateBuilding(buildingDTO));
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/{id}")

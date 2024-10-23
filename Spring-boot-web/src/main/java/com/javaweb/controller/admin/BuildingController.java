@@ -2,6 +2,7 @@ package com.javaweb.controller.admin;
 
 import com.javaweb.enums.buildingRentType;
 import com.javaweb.enums.districtCode;
+import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.service.IBuildingService;
 import com.javaweb.service.IUserService;
@@ -38,18 +39,20 @@ public class BuildingController {
         return modelAndView;
     }
 
-//    @GetMapping(value = "/admin/building-edit")
-//    private ModelAndView buildingEdit(@ModelAttribute(name = "buildingEdit") BuildingDTO params) {
-//        ModelAndView modelAndView = new ModelAndView("admin/building/edit");
-//
-//        modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
-//        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
-//
-//        return modelAndView;
-//    }
+    // Hiển thị màn hình Thêm mới
+    @GetMapping(value = "/admin/building-edit")
+    private ModelAndView buildingEdit(@ModelAttribute(name = "buildingEdit") BuildingDTO params) {
+        ModelAndView modelAndView = new ModelAndView("admin/building/edit");
 
+        modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
+        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
+
+        return modelAndView;
+    }
+
+    // Hiển thị màn hình Cập nhật
     @GetMapping(value = "/admin/building-edit-{id}")
-    private ModelAndView buildingEdit(@PathVariable Long id) {
+    private ModelAndView buildingEdit(@ModelAttribute(name = "buildingEdit") BuildingDTO buildingDTO, @PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("admin/building/edit");
 
         modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"

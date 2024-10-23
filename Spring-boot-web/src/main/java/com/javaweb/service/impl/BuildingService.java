@@ -9,6 +9,7 @@ import com.javaweb.model.response.BuildingSearchResponse;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.RentAreaRepository;
 import com.javaweb.service.IBuildingService;
+import com.javaweb.utils.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class BuildingService implements IBuildingService {
     public BuildingDTO findOneBuildingById(Long id) {
         BuildingEntity buildingEntity = buildingRepository.findOneBuildingById(id);
 
-        BuildingDTO buildingDTO = modelMapper.map(buildingEntity, BuildingDTO.class);
+        BuildingDTO buildingDTO = buildingConverter.convertToDTO(buildingEntity);
 
         return buildingDTO;
     }
@@ -60,7 +61,7 @@ public class BuildingService implements IBuildingService {
         String result = "";
 
         // Thêm mới thì ko cần id
-        if(building.getId() == null) {
+        if (building.getId() == null) {
             editBuilding = modelMapper.map(building, BuildingEntity.class);
 
             editBuilding.setType(String.join(",", building.getTypeCode()));
@@ -69,14 +70,16 @@ public class BuildingService implements IBuildingService {
 
             // Khi này building mới thêm có id rồi, thì save rentArea vào
             // + Nếu save rentArea trước thì sẽ lỗi ngay :))
-            RentAreaEntity rentAreaEntity = new RentAreaEntity();
+            for (String item : building.getRentArea().split(",")) {
+                if( StringUtils.check(item) ){
+                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-            if(building.getRentArea() != null){
-                rentAreaEntity.setBuildingEntity(editBuilding);
-                rentAreaEntity.setValue( building.getRentArea().intValue() );
+                    rentAreaEntity.setBuildingEntity(editBuilding);
+                    rentAreaEntity.setValue(Integer.parseInt(item));
+
+                    rentAreaRepository.save(rentAreaEntity);
+                }
             }
-
-            rentAreaRepository.save(rentAreaEntity);
 
             result = "Thêm mới thành công!";
         }

@@ -352,6 +352,8 @@
                                     <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông tin</button>
                                 </c:if>
 
+                                <button type="reset" class="btn btn-default">Xóa thông tin</button>
+
                                 <a href="/admin/building-list">
                                     <!-- 1 cái button nằm trong form thì type mặc định của button sẽ theo type mặc định của form,
                                         nên phải đổi type của button để thực hiện chức năng khác-->

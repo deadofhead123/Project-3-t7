@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +26,10 @@ public class BuildingDTO extends AbstractDTO{
     @NotBlank(message = "Tên quận không được để trống!")
     private String district;
 
-    @NotBlank(message = "Số tầng hầm không được để trống!")
     @Min(value = 0, message = "Số tầng hầm phải là số dương!")
     private Long numberOfBasement;
 
+    @NotNull(message = "Diện tích sàn không được để trống!")
     @Min(value = 0, message = "Diện tích sàn phải là số dương!")
     private Long floorArea;
 
@@ -44,6 +45,11 @@ public class BuildingDTO extends AbstractDTO{
     private String payment;
     private String rentTime;
     private String decorationTime;
+
+    @NotNull(message = "Giá thuê không được để trống!")
+    @Min(value = 0, message = "Giá thuê phải là số dương")
+    private Long rentPrice;
+
     private String rentPriceDescription;
     private String carFee;
     private String motorFee;
@@ -52,14 +58,10 @@ public class BuildingDTO extends AbstractDTO{
     private String note;
 
     @NotBlank(message = "Diện tích thuê không được để trống!")
-    @Min(value = 0, message = "Diện tích thuê phải là số dương!")
-    private Long rentArea;
+    private String rentArea;
 
     private String managerName;
     private String managerPhoneNumber;
-
-    @Min(value = 0, message = "Giá thuê phải là số dương")
-    private Long rentPrice;
 
     private String serviceFee;
     private double brokerageFee;

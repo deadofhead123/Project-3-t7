@@ -2,6 +2,7 @@ package com.javaweb.converter;
 
 import com.javaweb.entity.BuildingEntity;
 import com.javaweb.enums.districtCode;
+import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.BuildingSearchResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,18 @@ public class BuildingConverter {
         // Xem class RentAreaEntity và RentAreaRepositoryImpl để biết thêm
         new_building.setRentArea( ele.getRentAreaEntities().stream().
                 map(x -> x.getValue().toString() ).collect(Collectors.joining(", ")) );
+
+        return new_building;
+    }
+
+    public BuildingDTO convertToDTO(BuildingEntity ele) { // ele: element
+        // Lấy danh sách kết quả
+        // Sử dụng Model Mapper để copy các field giống nhau trong BuildingEntity sang BuildingResponseDTO
+        BuildingDTO new_building = modelMapper.map(ele, BuildingDTO.class);
+
+        // Xem class RentAreaEntity và RentAreaRepositoryImpl để biết thêm
+        new_building.setRentArea( ele.getRentAreaEntities().stream().
+                map(x -> x.getValue().toString() ).collect(Collectors.joining(",")) );
 
         return new_building;
     }

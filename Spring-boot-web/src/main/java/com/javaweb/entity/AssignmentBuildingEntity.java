@@ -8,10 +8,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "rentarea")
-public class RentAreaEntity extends BaseEntity{
-    @Column(name = "value")
-    private Integer value;
+@Table(name="assignmentbuilding")
+public class AssignmentBuildingEntity extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staffid")
+    private UserEntity users;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buildingid")

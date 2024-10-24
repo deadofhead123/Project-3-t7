@@ -393,7 +393,10 @@
         json['typeCode'] = typeCode;
 
         console.log(json);
-        addOrUpdateBuilding(json);
+
+        if(confirm("Xác nhận các thông tin chính xác?")){
+            addOrUpdateBuilding(json);
+        }
     });
 
     // Hàm cho nút "Thêm tòa nhà"

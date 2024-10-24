@@ -97,9 +97,8 @@
                                                 <div class="col-xs-6">
                                                     <div>
                                                         <label>Diện tích sàn</label>
-                                                            <%--                                                        <input type="number" name="floorArea"--%>
-                                                            <%--                                                               class="form-control" value="${modelSearch.floorArea}">--%>
-                                                        <form:input class="form-control" path="floorArea"/>
+                                                        <input type="number" name="floorArea"
+                                                               class="form-control" value="${modelSearch.floorArea}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -306,14 +305,15 @@
                                                         Tìm kiếm
                                                     </button>
                                                 </div>
-
-                                                <!--Nút xóa (reset hết các field tìm kiếm)-->
-                                                <div class="col-xs-2">
-                                                    <button type="reset" class="btn btn-sm btn-primary">Xóa</button>
-                                                </div>
+<!--Nút xóa (reset hết các field tìm kiếm)-->
+                                        <div class="col-xs-2">
+                                            <button type="button" class="btn btn-sm btn-primary">Xóa</button>
+                                        </div>
                                             </div>
                                         </div>
                                         <!--Hết dòng 7-->
+
+
                                     </form:form>
 
                                 </div>
@@ -503,7 +503,9 @@
         if (buildingIds.length == 0) {
             alert("Chưa chọn tòa nhà cần xóa!");
         } else {
-            btnDeleteBuilding(buildingIds);
+            if (confirm("Bạn chắc chắn muốn xóa các tòa nhà được đánh dấu chứ?")) {
+                btnDeleteBuilding(buildingIds);
+            }
         }
     });
 
@@ -514,7 +516,9 @@
         // // btnDeleteBuilding(data); ==> Sai
         // // Không được truyền mỗi biến data mà phải truyền cái key cụ thể trong data vào
         // btnDeleteBuilding(data['buildingIds']);
-        btnDeleteBuilding(buildingId);
+        if (confirm("Bạn chắc chắn muốn xóa các tòa nhà này chứ?")) {
+            btnDeleteBuilding(buildingId);
+        }
     }
 
     // Gửi thông tin 1 hoặc các tòa nhà bị xóa về phía server
@@ -526,10 +530,11 @@
             type: "DELETE", // HTTP method
             // data: JSON.stringify(json), // , Phải thực hiện chuyển đổi kiểu dữ liệu của đối tượng "json" để gửi xuống server
             // contentType: "application/json",  // Kiểu nội dung để gửi cho server
-            dataType: "text",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
+            dataType: "JSON",   // Kiểu dữ liệu để gửi cho client, bên Controller cũng phải trả ra đúng kiểu dữ liệu này
             success: function (result) {
-                console.log("Xóa thành công!");
-                alert(result);
+                console.log(result);
+                alert(result.message);
+                location.reload();
             },
             error: function (result) {
                 console.log("Thất bại!");
@@ -618,6 +623,13 @@
             }
         });
     }
+
+    /*
+    --------------------------------------------------- Tải lại trang ---------------------------------------------------
+     */
+    // function btnReload(){
+    //     $('#listForm').trigger("reset");
+    // }
 </script>
 </body>
 </html>

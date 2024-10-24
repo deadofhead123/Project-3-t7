@@ -19,7 +19,7 @@ public interface BuildingRepository extends JpaRepository<BuildingEntity, Long>,
 //    List<BuildingEntity> findByNameContainingAndDistrict_NameContaining(String name, String district);
 
     // Xóa hết các building có id trong danh sách này
-    void deleteByIdIn(Integer[] ids);
+    void deleteByIdIn(Long[] ids);
 
-    List<BuildingEntity> findByIdIn(Integer[] ids);
+    List<BuildingEntity> findByIdIn(Long[] ids);
 }

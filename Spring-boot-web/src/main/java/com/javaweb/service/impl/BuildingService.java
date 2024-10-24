@@ -76,7 +76,7 @@ public class BuildingService implements IBuildingService {
                 if (StringUtils.check(item)) {
                     RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-                    rentAreaEntity.setBuildingEntity(editBuilding);
+                    rentAreaEntity.setBuildings(editBuilding);
                     rentAreaEntity.setValue(Integer.parseInt(item));
 
                     rentAreaRepository.save(rentAreaEntity);
@@ -100,7 +100,7 @@ public class BuildingService implements IBuildingService {
                 if (StringUtils.check(item)) {
                     RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-                    rentAreaEntity.setBuildingEntity(editBuilding);
+                    rentAreaEntity.setBuildings(editBuilding);
                     rentAreaEntity.setValue(Integer.parseInt(item));
 
                     rentAreaRepository.save(rentAreaEntity);
@@ -113,8 +113,15 @@ public class BuildingService implements IBuildingService {
         return result;
     }
 
+    // Xóa các building theo id
     @Override
-    public String deleteBuilding(Integer[] listId) {
-        return "";
+    public String deleteBuilding(Long[] listId) {
+        // Để xóa các building thì phải xóa chúng trong rentArea trước để tránh lỗi
+        rentAreaRepository.deleteByBuildingEntityIn(buildingRepository.findByIdIn(listId));
+
+        // Xóa
+        buildingRepository.deleteByIdIn(listId);
+
+        return "Xóa thành công!";
     }
 }

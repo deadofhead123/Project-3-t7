@@ -15,5 +15,5 @@ public interface IBuildingService {
     String addOrUpdateBuilding(BuildingDTO building);
 
     // Xóa các tòa nhà
-    String deleteBuilding(Integer[] listId);
+    String deleteBuilding(Long[] listId);
 }

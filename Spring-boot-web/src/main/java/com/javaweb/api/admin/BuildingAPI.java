@@ -1,10 +1,12 @@
 package com.javaweb.api.admin;
 
+import com.javaweb.entity.BuildingEntity;
 import com.javaweb.entity.UserEntity;
 import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
+import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.UserRepository;
 import com.javaweb.service.impl.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class BuildingAPI {
 
     @Autowired
     private BuildingService buildingService;
+    private BuildingRepository buildingRepository;
 
     // Thêm mới hoặc sửa thông tin tòa nhà
     @PostMapping
@@ -55,12 +58,12 @@ public class BuildingAPI {
 
     // Phải xuống Service để xử lí phần lấy nhân viên đang quản lý tòa nhà
     @GetMapping("/{id}")
-    private Object loadStaffs(@PathVariable int id) {
+    private Object loadStaffs(@PathVariable Long id) {
         // Lấy ra các nhân viên có role là staff
         List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
 
         // Lấy ra tòa nhà có id được gửi xuống
-
+        BuildingEntity buildingEntity = buildingRepository.getOne(id);
 
         // Lọc các nhân viên đang quản lý tòa nhà
         List<UserEntity> assignedStaffs = new ArrayList<>(); // Lấy trong bảng assignmentbuilding
@@ -122,9 +125,17 @@ public class BuildingAPI {
         return new String("Test phần giao!");
     }
 
-    @DeleteMapping("/{Ids}")
-    private Object deleteBuilding(@PathVariable String[] Ids) {
+    @DeleteMapping("/{ids}")
+    private ResponseEntity<?> deleteBuilding(@PathVariable Long[] ids) {
+        ResponseDTO responseDTO = new ResponseDTO();
+
         // Theo mô hình 3-layer để xử lí tiếp
-        return new String("Đã xóa");
+        try {
+            responseDTO.setMessage(buildingService.deleteBuilding(ids));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

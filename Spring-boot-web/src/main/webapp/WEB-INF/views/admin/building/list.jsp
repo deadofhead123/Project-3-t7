@@ -604,7 +604,9 @@
 
         console.log(json);
 
-        updateAssignmentBuilding(json);
+        if(confirm("Bạn chắc chắn muốn cập nhật giao tòa nhà?")){
+            updateAssignmentBuilding(json);
+        }
     });
 
     // Gửi dữ liệu để cập nhật xuống server
@@ -614,12 +616,14 @@
             type: "PUT",
             data: JSON.stringify(json),
             contentType: 'application/json',
-            dataType: 'text',
+            dataType: 'JSON',
             success: function (result) {
-                alert("Giao thành công!");
+                console.log("Giao thành công!");
+                alert(result.message);
             },
             error: function (result) {
-                alert("Giao thất bại!");
+                console.log("Giao thất bại!");
+                alert(result.message);
             }
         });
     }

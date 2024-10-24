@@ -4,8 +4,7 @@ import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
-import com.javaweb.repository.BuildingRepository;
-import com.javaweb.repository.UserRepository;
+import com.javaweb.service.impl.AssignmentBuildingService;
 import com.javaweb.service.impl.BuildingService;
 import com.javaweb.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/buildings")
 public class BuildingAPI {
     @Autowired
-    private UserRepository userRepository;
+    private BuildingService buildingService;
 
     @Autowired
-    private BuildingService buildingService;
-    private BuildingRepository buildingRepository;
+    private AssignmentBuildingService assignmentBuildingService;
+
     @Autowired
     private UserService userService;
 
@@ -56,6 +55,7 @@ public class BuildingAPI {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    // Lọc nhân viên đang quản lý tòa nhà
     @GetMapping("/{id}")
     private ResponseEntity<?> loadStaffs(@PathVariable(name = "id") Long buildingId) {
         List<StaffResponseDTO> staffResponseDTOs = userService.loadStaffs(buildingId);
@@ -68,17 +68,25 @@ public class BuildingAPI {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    // Giao tòa nhà cho nhân viên quản lý
     @PutMapping("/staffs")
     private Object updateAssignmentBuilding(@RequestBody AssignmentBuildingDTO assignmentBuildingDTO) {
-        // Theo mô hình 3-layer để xử lí tiếp
-        return new String("Test phần giao!");
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        try {
+            responseDTO.setMessage(assignmentBuildingService.updateAssignmentBuilding(assignmentBuildingDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
+    // Xóa
     @DeleteMapping("/{ids}")
     private ResponseEntity<?> deleteBuilding(@PathVariable Long[] ids) {
         ResponseDTO responseDTO = new ResponseDTO();
 
-        // Theo mô hình 3-layer để xử lí tiếp
         try {
             responseDTO.setMessage(buildingService.deleteBuilding(ids));
         } catch (Exception e) {

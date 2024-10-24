@@ -6,6 +6,7 @@ import com.javaweb.entity.RentAreaEntity;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
+import com.javaweb.repository.AssignmentBuildingRepository;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.RentAreaRepository;
 import com.javaweb.service.IBuildingService;
@@ -29,6 +30,9 @@ public class BuildingService implements IBuildingService {
 
     @Autowired
     private RentAreaRepository rentAreaRepository;
+
+    @Autowired
+    private AssignmentBuildingRepository assignmentBuildingRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -115,11 +119,13 @@ public class BuildingService implements IBuildingService {
     // Xóa các building theo id
     @Override
     public String deleteBuilding(Long[] listId) {
+        List<BuildingEntity> buildingEntities = buildingRepository.findByIdIn(listId);
+
         // Để xóa các building thì phải xóa chúng trong bảng rentarea trước để tránh lỗi
-        rentAreaRepository.deleteByBuildingEntityIn(buildingRepository.findByIdIn(listId));
+        rentAreaRepository.deleteByBuildingEntityIn(buildingEntities);
 
         // Cũng cần phải xóa trong assignmentbuilding nữa
-        
+        assignmentBuildingRepository.deleteAllByBuildingsIn(buildingEntities);
 
         // Xóa
         buildingRepository.deleteByIdIn(listId);

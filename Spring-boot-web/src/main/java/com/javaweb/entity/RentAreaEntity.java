@@ -15,5 +15,5 @@ public class RentAreaEntity extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buildingid")
-    private BuildingEntity buildings;
+    private BuildingEntity buildingEntity;
 }

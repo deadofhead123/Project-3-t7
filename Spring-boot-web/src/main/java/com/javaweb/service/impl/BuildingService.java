@@ -76,7 +76,7 @@ public class BuildingService implements IBuildingService {
                 if (StringUtils.check(item)) {
                     RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-                    rentAreaEntity.setBuildings(editBuilding);
+                    rentAreaEntity.setBuildingEntity(editBuilding);
                     rentAreaEntity.setValue(Integer.parseInt(item));
 
                     rentAreaRepository.save(rentAreaEntity);
@@ -100,7 +100,7 @@ public class BuildingService implements IBuildingService {
                 if (StringUtils.check(item)) {
                     RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-                    rentAreaEntity.setBuildings(editBuilding);
+                    rentAreaEntity.setBuildingEntity(editBuilding);
                     rentAreaEntity.setValue(Integer.parseInt(item));
 
                     rentAreaRepository.save(rentAreaEntity);

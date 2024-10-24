@@ -60,7 +60,7 @@ public class BuildingAPI {
     @GetMapping("/{id}")
     private Object loadStaffs(@PathVariable Long id) {
         // Lấy ra các nhân viên có role là staff
-        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+        List<UserEntity> userEntities = userRepository.findByStatusAndUserRole_Roles(1, "STAFF"); // role_id = 2 là staff
 
         // Lấy ra tòa nhà có id được gửi xuống
         BuildingEntity buildingEntity = buildingRepository.getOne(id);

@@ -2,13 +2,18 @@ package com.javaweb.service.impl;
 
 import com.javaweb.converter.UserConverter;
 import com.javaweb.entity.UserEntity;
+import com.javaweb.model.dto.UserDTO;
 import com.javaweb.repository.RoleRepository;
 import com.javaweb.repository.UserRepository;
 import com.javaweb.service.IUserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,31 +33,29 @@ public class UserService implements IUserService {
     @Autowired
     private UserConverter userConverter;
 
-//    @Override
-//    public UserDTO findOneByUserNameAndStatus(String name, int status) {
-//        return userConverter.convertToDto(userRepository.findOneByUserNameAndStatus(name, status));
-//    }
-//
-//    @Override
-//    public List<UserDTO> getUsers(String searchValue, Pageable pageable) {
-//        Page<UserEntity> users = null;
-//        if (StringUtils.isNotBlank(searchValue)) {
-//            users = userRepository.findByUserNameContainingIgnoreCaseOrFullNameContainingIgnoreCaseAndStatusNot(searchValue, searchValue, 0, pageable);
-//        } else {
-//            users = userRepository.findByStatusNot(0, pageable);
-//        }
-//        List<UserEntity> newsEntities = users.getContent();
-//        List<UserDTO> result = new ArrayList<>();
-//        for (UserEntity userEntity : newsEntities) {
-//            UserDTO userDTO = userConverter.convertToDto(userEntity);
-//            userDTO.setRoleCode(userEntity.getRoles().get(0).getCode());
-//            result.add(userDTO);
-//        }
-//        return result;
-//    }
-//
-//
-//
+    @Override
+    public UserDTO findOneByUserNameAndStatus(String name, int status) {
+        return userConverter.convertToDto(userRepository.findOneByUserNameAndStatus(name, status));
+    }
+
+    @Override
+    public List<UserDTO> getUsers(String searchValue, Pageable pageable) {
+        Page<UserEntity> users = null;
+        if (StringUtils.isNotBlank(searchValue)) {
+            users = userRepository.findByUserNameContainingIgnoreCaseOrFullNameContainingIgnoreCaseAndStatusNot(searchValue, searchValue, 0, pageable);
+        } else {
+            users = userRepository.findByStatusNot(0, pageable);
+        }
+        List<UserEntity> newsEntities = users.getContent();
+        List<UserDTO> result = new ArrayList<>();
+        for (UserEntity userEntity : newsEntities) {
+            UserDTO userDTO = userConverter.convertToDto(userEntity);
+            userDTO.setRoleCode(roleRepository.findByUserId(userEntity.getId()).get(0).getCode());
+            result.add(userDTO);
+        }
+        return result;
+    }
+
 //    @Override
 //    public List<UserDTO> getAllUsers(Pageable pageable) {
 //        List<UserEntity> userEntities = userRepository.getAllUsers(pageable);
@@ -64,7 +67,7 @@ public class UserService implements IUserService {
 //        }
 //        return results;
 //    }
-//
+
 //    @Override
 //    public int countTotalItems() {
 //        return userRepository.countTotalItem();
@@ -165,7 +168,7 @@ public class UserService implements IUserService {
 
     @Override
     public Map<Long, String> allStaff() {
-        List<UserEntity> listStaff = userRepository.findByStatusAndRoles_Code( 1, "STAFF");
+        List<UserEntity> listStaff = userRepository.findByStatusAndUserRole_Roles( 1, "STAFF");
         Map<Long, String> staffs = new HashMap<Long, String>();
 
         for(UserEntity userEntity : listStaff) {

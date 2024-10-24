@@ -47,4 +47,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		String sql = "SELECT * FROM user u WHERE u.status = 1";
 		return sql;
 	}
+
+	@Override
+	public List<UserEntity> findByStatusAndUserRole_Roles(Integer status, String roles) {
+		String sql = "SELECT * FROM user u " +
+				"INNER JOIN user_role ur ON u.id = ur.user_id" +
+				"INNER JOIN role r ON ur.role_id = r.id" +
+				"WHERE u.status = " + status + "AND r.code = " + roles;
+
+		Query query = entityManager.createNativeQuery(sql.toString());
+
+		return query.getResultList();
+	}
 }

@@ -149,4 +149,15 @@ public class RoleRepositoryImpl implements RoleRepository {
 	public <S extends RoleEntity> boolean exists(Example<S> example) {
 		return false;
 	}
+
+	@Override
+	public List<RoleEntity> findByUserId(Long userId) {
+		String sql = "select * FROM role as r " +
+				"INNER JOIN user_role ur ON r.id = ur.role_id" +
+				"WHERE ur.user_id = " + userId;
+
+		Query query = entityManager.createNativeQuery(sql, RoleEntity.class);
+
+		return query.getResultList();
+	}
 }

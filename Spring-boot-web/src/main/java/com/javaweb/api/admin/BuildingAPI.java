@@ -31,7 +31,7 @@ public class BuildingAPI {
     private BuildingService buildingService;
     private BuildingRepository buildingRepository;
 
-    // Thêm mới hoặc sửa thông tin tòa nhà
+    // Thêm tòa nhà
     @PostMapping
     private ResponseEntity<?> addOrUpdateBuilding(@Valid @RequestBody BuildingDTO buildingDTO, BindingResult bindingResult) {    // khai báo BindingResult để hứng các lỗi
         ResponseDTO responseDTO = new ResponseDTO();
@@ -56,7 +56,6 @@ public class BuildingAPI {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // Phải xuống Service để xử lí phần lấy nhân viên đang quản lý tòa nhà
     @GetMapping("/{id}")
     private Object loadStaffs(@PathVariable Long id) {
         // Lấy ra các nhân viên có role là staff

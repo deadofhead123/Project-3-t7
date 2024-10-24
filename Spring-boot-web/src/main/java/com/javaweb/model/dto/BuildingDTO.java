@@ -26,11 +26,11 @@ public class BuildingDTO extends AbstractDTO{
     @NotBlank(message = "Tên quận không được để trống!")
     private String district;
 
-    @Min(value = 1, message = "Số tầng hầm phải là số dương!")
+    @Min(value = 0, message = "Số tầng hầm phải là số dương!")
     private Long numberOfBasement;
 
     @NotNull(message = "Diện tích sàn không được để trống!")
-    @Min(value = 1, message = "Diện tích sàn phải là số dương!")
+    @Min(value = 0, message = "Diện tích sàn phải là số dương!")
     private Long floorArea;
 
     private String level;
@@ -47,7 +47,7 @@ public class BuildingDTO extends AbstractDTO{
     private String decorationTime;
 
     @NotNull(message = "Giá thuê không được để trống!")
-    @Min(value = 1, message = "Giá thuê phải là số dương")
+    @Min(value = 0, message = "Giá thuê phải là số dương")
     private Long rentPrice;
 
     private String rentPriceDescription;
@@ -62,9 +62,8 @@ public class BuildingDTO extends AbstractDTO{
 
     private String managerName;
     private String managerPhoneNumber;
-    private String serviceFee;
 
-    @Min(value = 1, message = "Phí môi giới phải là số dương!")
+    private String serviceFee;
     private double brokerageFee;
     private String image;
     private String imageBase64;

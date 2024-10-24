@@ -1,5 +1,6 @@
 package com.javaweb.repository;
 
+import com.javaweb.entity.BuildingEntity;
 import com.javaweb.entity.UserEntity;
 import com.javaweb.repository.custom.UserRepositoryCustom;
 import org.springframework.data.domain.Page;
@@ -12,9 +13,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> , UserRe
     UserEntity findOneByUserNameAndStatus(String name, int status);
     Page<UserEntity> findByUserNameContainingIgnoreCaseOrFullNameContainingIgnoreCaseAndStatusNot(String userName, String fullName, int status,
                                                                                                   Pageable pageable);
+
     Page<UserEntity> findByStatusNot(int status, Pageable pageable);
     long countByUserNameContainingIgnoreCaseOrFullNameContainingIgnoreCaseAndStatusNot(String userName, String fullName, int status);
     long countByStatusNot(int status);
     UserEntity findOneByUserName(String userName);
     List<UserEntity> findByIdIn(List<Long> id);
+    List<UserEntity> findByStatusAndRoles_Code(Integer status, String roles);
+    List<UserEntity> findByAssignmentBuildings_Buildings(BuildingEntity buildingEntity);
 }

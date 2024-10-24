@@ -25,10 +25,7 @@ public class RoleEntity extends BaseEntity {
         return serialVersionUID;
     }
 
-//    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-//    private List<UserEntity> user = new ArrayList<>();
-
-    @OneToMany(mappedBy="roles",fetch = FetchType.LAZY)
-    private List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private List<UserEntity> user = new ArrayList<>();
 
 }

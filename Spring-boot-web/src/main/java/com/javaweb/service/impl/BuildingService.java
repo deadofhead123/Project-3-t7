@@ -14,10 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class BuildingService implements IBuildingService {
     @Autowired
     private BuildingRepository buildingRepository;
@@ -84,46 +86,40 @@ public class BuildingService implements IBuildingService {
             result = "Thêm mới thành công!";
         }
         // Cập nhật
-//        else {
-//            editBuilding = buildingRepository.getOne( building.getId() );
-//
-//            if(editBuilding != null) {
-//                // Xóa các rentArea cũ để tránh bị trùng
-//                rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
-//
-//                // Cập nhật thông tin của building
-////                editBuilding.setName( building.getName() );
-////                editBuilding.setFloorArea( building.getFloorArea() );
-////                editBuilding.setWard( building.getWard() );
-////                editBuilding.setNumberOfBasement( building.getNumberOfBasement() );
-////                newBuilding.setRentPrice( building.getRentPrice() );
-////                newBuilding.setDistrict( districtRepository.getOne( building.getDistrictId() ) );
-//
-//                buildingRepository.save(newBuilding);
-//
-//                for(String it : building.getTypeCode()) {
-//                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
-//
-//                    rentAreaEntity.setBuildingEntity(newBuilding);
-//                    rentAreaEntity.setValue( Integer.parseInt(it) );
-//
-//                    rentAreaRepository.save(rentAreaEntity);
-//                }
-//
-//                return "Cập nhật thành công!";
-//            }
-//            else {
-//                return "Cập nhật thất bại do ko thấy tòa nhà có id = " + building.getId();
-//            }
-//        }
+        else {
+            editBuilding = buildingRepository.getOne( building.getId() );
+
+            // Xóa các rentArea cũ để tránh bị trùng
+            rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
+
+            editBuilding.setType(String.join(",", building.getTypeCode()));
+
+            buildingRepository.save(editBuilding);
+
+            for(String it : building.getRentArea().split(",")) {
+                if( StringUtils.check(it) ){
+                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
+
+                    rentAreaEntity.setBuildingEntity(editBuilding);
+                    rentAreaEntity.setValue( Integer.parseInt(it) );
+
+                    rentAreaRepository.save(rentAreaEntity);
+                }
+            }
+
+            return "Cập nhật thành công!";
+        }
         return result;
     }
 
     // Xóa các building theo id
     @Override
     public String deleteBuilding(Long[] listId) {
-        // Để xóa các building thì phải xóa chúng trong rentArea trước để tránh lỗi
+        // Để xóa các building thì phải xóa chúng trong bảng rentarea trước để tránh lỗi
         rentAreaRepository.deleteByBuildingEntityIn(buildingRepository.findByIdIn(listId));
+
+        // Cũng cần phải xóa trong assignmentbuilding nữa
+        
 
         // Xóa
         buildingRepository.deleteByIdIn(listId);

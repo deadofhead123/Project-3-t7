@@ -537,7 +537,7 @@
                 location.reload();
             },
             error: function (result) {
-                console.log("Thất bại!");
+                console.log(result);
                 alert("Xóa thất bại!");
             }
         });

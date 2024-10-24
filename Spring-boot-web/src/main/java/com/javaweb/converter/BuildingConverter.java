@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 // Để khi gọi class này, mà trong đó nó gọi đến các interface khác, thì ta phải thêm Annotation @Component
@@ -34,6 +35,8 @@ public class BuildingConverter {
         // Lấy danh sách kết quả
         // Sử dụng Model Mapper để copy các field giống nhau trong BuildingEntity sang BuildingResponseDTO
         BuildingDTO new_building = modelMapper.map(ele, BuildingDTO.class);
+
+        new_building.setTypeCode(Arrays.asList(ele.getType().split(",")));
 
         // Xem class RentAreaEntity và RentAreaRepositoryImpl để biết thêm
         new_building.setRentArea( ele.getRentAreaEntities().stream().

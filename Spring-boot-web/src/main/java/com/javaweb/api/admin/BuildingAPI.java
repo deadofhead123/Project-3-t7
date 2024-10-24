@@ -1,7 +1,5 @@
 package com.javaweb.api.admin;
 
-import com.javaweb.entity.BuildingEntity;
-import com.javaweb.entity.UserEntity;
 import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
@@ -9,6 +7,7 @@ import com.javaweb.model.response.StaffResponseDTO;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.UserRepository;
 import com.javaweb.service.impl.BuildingService;
+import com.javaweb.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +28,8 @@ public class BuildingAPI {
     @Autowired
     private BuildingService buildingService;
     private BuildingRepository buildingRepository;
+    @Autowired
+    private UserService userService;
 
     // Thêm tòa nhà
     @PostMapping
@@ -57,65 +57,15 @@ public class BuildingAPI {
     }
 
     @GetMapping("/{id}")
-    private Object loadStaffs(@PathVariable Long id) {
-        // Lấy ra các nhân viên có role là staff
-        List<UserEntity> userEntities = userRepository.findByStatusAndUserRole_Roles(1, "STAFF"); // role_id = 2 là staff
-
-        // Lấy ra tòa nhà có id được gửi xuống
-        BuildingEntity buildingEntity = buildingRepository.getOne(id);
-
-        // Lọc các nhân viên đang quản lý tòa nhà
-        List<UserEntity> assignedStaffs = new ArrayList<>(); // Lấy trong bảng assignmentbuilding
-
-        List<StaffResponseDTO> staffResponseDTOs = new ArrayList<>();
-
-        StaffResponseDTO staff1 = new StaffResponseDTO();
-        staff1.setUserName("A");
-        staff1.setStaffId(1L);
-        staff1.setChecked("checked");
-
-        StaffResponseDTO staff2 = new StaffResponseDTO();
-        staff2.setUserName("B");
-        staff2.setStaffId(2L);
-        staff2.setChecked("checked");
-
-        StaffResponseDTO staff3 = new StaffResponseDTO();
-        staff3.setUserName("C");
-        staff3.setStaffId(3L);
-        staff3.setChecked("unchecked");
-
-        StaffResponseDTO staff4 = new StaffResponseDTO();
-        staff4.setUserName("D");
-        staff4.setStaffId(4L);
-        staff4.setChecked("unchecked");
-
-        staffResponseDTOs.add(staff1);
-        staffResponseDTOs.add(staff2);
-        staffResponseDTOs.add(staff3);
-        staffResponseDTOs.add(staff4);
-
-//        for(UserEntity userEntity : userEntities){
-//            StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
-//
-//            // Nếu nhân viên này đang quản lý 1 tòa nhà nào đó, thì set checked = "checked" và ngược lại
-//            if(assignedStaffs.contains(userEntity)){
-//                staffResponseDTO.setUserName(userEntity.getUserName());
-//                staffResponseDTO.setStaffId(userEntity.getId());
-//                staffResponseDTO.setChecked("checked");
-//            }
-//            else{
-//                staffResponseDTO.setChecked("unchecked");
-//            }
-//
-//            staffResponseDTOs.add(staffResponseDTO);
-//        }
+    private ResponseEntity<?> loadStaffs(@PathVariable(name = "id") Long buildingId) {
+        List<StaffResponseDTO> staffResponseDTOs = userService.loadStaffs(buildingId);
 
         ResponseDTO responseDTO = new ResponseDTO();
 
         responseDTO.setData(staffResponseDTOs);
         responseDTO.setMessage("success");
 
-        return responseDTO;
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PutMapping("/staffs")

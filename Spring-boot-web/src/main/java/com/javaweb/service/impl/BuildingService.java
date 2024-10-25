@@ -66,53 +66,35 @@ public class BuildingService implements IBuildingService {
         BuildingEntity editBuilding = new BuildingEntity();
         String result = "";
 
-        // Thêm mới thì ko cần id
-        if (building.getId() == null) {
-            editBuilding = modelMapper.map(building, BuildingEntity.class);
-
-            editBuilding.setType(String.join(",", building.getTypeCode()));
-
-            buildingRepository.save(editBuilding);
-
-            // Khi này building mới thêm có id rồi, thì save rentArea vào
-            // + Nếu save rentArea trước thì sẽ lỗi ngay :))
-            for (String item : building.getRentArea().split(",")) {
-                if( StringUtils.check(item) ){
-                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
-
-                    rentAreaEntity.setBuildingEntity(editBuilding);
-                    rentAreaEntity.setValue(Integer.parseInt(item));
-
-                    rentAreaRepository.save(rentAreaEntity);
-                }
-            }
-
+        if(building.getId() == null){
             result = "Thêm mới thành công!";
         }
-        // Cập nhật
-        else {
+        else{
             editBuilding = buildingRepository.getOne( building.getId() );
 
             // Xóa các rentArea cũ để tránh bị trùng
             rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
 
-            editBuilding.setType(String.join(",", building.getTypeCode()));
-
-            buildingRepository.save(editBuilding);
-
-            for(String it : building.getRentArea().split(",")) {
-                if( StringUtils.check(it) ){
-                    RentAreaEntity rentAreaEntity = new RentAreaEntity();
-
-                    rentAreaEntity.setBuildingEntity(editBuilding);
-                    rentAreaEntity.setValue( Integer.parseInt(it) );
-
-                    rentAreaRepository.save(rentAreaEntity);
-                }
-            }
-
-            return "Cập nhật thành công!";
+            result = "Cập nhật thành công!";
         }
+
+        editBuilding = modelMapper.map(building, BuildingEntity.class);
+
+        editBuilding.setType(String.join(",", building.getTypeCode()));
+
+        buildingRepository.save(editBuilding);
+
+        for (String it : building.getRentArea().split(",")) {
+            if (StringUtils.check(it)) {
+                RentAreaEntity rentAreaEntity = new RentAreaEntity();
+
+                rentAreaEntity.setBuildingEntity(editBuilding);
+                rentAreaEntity.setValue(Integer.parseInt(it));
+
+                rentAreaRepository.save(rentAreaEntity);
+            }
+        }
+
         return result;
     }
 

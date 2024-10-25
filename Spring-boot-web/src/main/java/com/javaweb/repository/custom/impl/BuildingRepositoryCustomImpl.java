@@ -126,10 +126,22 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
 //			where.append(" AND rt.code IN(" + tC + ")");
 //		}
 
-        List<String> typeCode = buildingSearchRequest.getTypeCode();
         // TypeCode, xây dựng theo kiểu của Java 8
+//        List<String> typeCode = buildingSearchRequest.getTypeCode();
+//        // TypeCode, xây dựng theo kiểu của Java 8
+//        if (typeCode != null && typeCode.size() != 0) {
+//            where.append(" AND " + "b.type LIKE ('%" + String.join(",", typeCode) + "%')");
+//        }
+
+        List<String> typeCode = buildingSearchRequest.getTypeCode();
+
+        // type code lúc này có dạng string nên phải or giữa các loại type code
         if (typeCode != null && typeCode.size() != 0) {
-            where.append(" AND b.type LIKE '%" + String.join(",", typeCode) + "%'");
+            for(int i = 0; i < typeCode.size(); i++) {
+                typeCode.set(i, " b.type LIKE '%" + typeCode.get(i) + "%'");
+            }
+
+            where.append(" AND EXISTS (SELECT * FROM building b WHERE " + String.join(" OR ", typeCode) + ")");
         }
     }
 

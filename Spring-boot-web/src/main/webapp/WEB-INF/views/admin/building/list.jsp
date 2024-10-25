@@ -305,14 +305,16 @@
                                                         Tìm kiếm
                                                     </button>
                                                 </div>
-<!--Nút xóa (reset hết các field tìm kiếm)-->
-                                        <div class="col-xs-2">
-                                            <button type="button" class="btn btn-sm btn-primary">Xóa</button>
-                                        </div>
+                                                <!--Nút xóa (reset hết các field tìm kiếm)-->
+                                                <div class="col-xs-2">
+                                                    <a href="/admin/building-list">
+                                                        <button type="button" class="btn btn-sm btn-primary">Xóa
+                                                        </button>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                         <!--Hết dòng 7-->
-
 
                                     </form:form>
 
@@ -604,7 +606,7 @@
 
         console.log(json);
 
-        if(confirm("Bạn chắc chắn muốn cập nhật giao tòa nhà?")){
+        if (confirm("Bạn chắc chắn muốn cập nhật giao tòa nhà?")) {
             updateAssignmentBuilding(json);
         }
     });
@@ -628,12 +630,6 @@
         });
     }
 
-    /*
-    --------------------------------------------------- Tải lại trang ---------------------------------------------------
-     */
-    // function btnReload(){
-    //     $('#listForm').trigger("reset");
-    // }
 </script>
 </body>
 </html>

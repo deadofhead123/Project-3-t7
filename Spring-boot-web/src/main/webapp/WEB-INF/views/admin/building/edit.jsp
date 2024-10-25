@@ -411,6 +411,9 @@
             success: function(result){
                 console.log(result);
                 alert(result.message);
+
+                // Thay đổi url để chuyển hướng tới url ta muốn
+                location.replace("/admin/building-list");
             },
             error: function(result){
                 console.log(result);

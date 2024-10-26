@@ -1,5 +1,6 @@
 package com.javaweb.service;
 
+import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
@@ -16,4 +17,6 @@ public interface IBuildingService {
 
     // Xóa các tòa nhà
     String deleteBuilding(Long[] listId);
+
+    String updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO);
 }

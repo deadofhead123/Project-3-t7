@@ -3,12 +3,14 @@ package com.javaweb.service.impl;
 import com.javaweb.converter.BuildingConverter;
 import com.javaweb.entity.BuildingEntity;
 import com.javaweb.entity.RentAreaEntity;
+import com.javaweb.entity.UserEntity;
+import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
-import com.javaweb.repository.AssignmentBuildingRepository;
 import com.javaweb.repository.BuildingRepository;
 import com.javaweb.repository.RentAreaRepository;
+import com.javaweb.repository.UserRepository;
 import com.javaweb.service.IBuildingService;
 import com.javaweb.utils.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -32,10 +34,9 @@ public class BuildingService implements IBuildingService {
     private RentAreaRepository rentAreaRepository;
 
     @Autowired
-    private AssignmentBuildingRepository assignmentBuildingRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<BuildingSearchResponse> findAll(BuildingSearchRequest buildingSearchRequest) {
@@ -54,7 +55,7 @@ public class BuildingService implements IBuildingService {
 
     @Override
     public BuildingDTO findOneBuildingById(Long id) {
-        BuildingEntity buildingEntity = buildingRepository.findOneBuildingById(id);
+        BuildingEntity buildingEntity = buildingRepository.getOne(id);
 
         BuildingDTO buildingDTO = buildingConverter.convertToDTO(buildingEntity);
 
@@ -107,11 +108,57 @@ public class BuildingService implements IBuildingService {
         rentAreaRepository.deleteByBuildingEntityIn(buildingEntities);
 
         // Cũng cần phải xóa trong assignmentbuilding nữa
-        assignmentBuildingRepository.deleteAllByBuildingsIn(buildingEntities);
+        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+
+        for(UserEntity userEntity : userEntities){
+            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
+            buildingEntities1.removeAll(buildingEntities);
+
+            userEntity.setBuildings(buildingEntities1);
+
+            userRepository.save(userEntity);
+        }
 
         // Xóa
         buildingRepository.deleteByIdIn(listId);
 
         return "Xóa thành công!";
+    }
+
+    @Override
+    public String updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO) {
+        Long id = assignmentBuildingDTO.getBuildingId();
+
+        BuildingEntity buildingEntity = buildingRepository.getOne(id);
+
+        // Xóa phần giao cũ đi để tránh bị trùng
+        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+
+        for(UserEntity userEntity : userEntities){
+            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
+            buildingEntities1.remove(buildingEntity);
+
+            userEntity.setBuildings(buildingEntities1);
+
+            userRepository.save(userEntity);
+        }
+
+        // ------------------------------ Thêm phần giao mới (Phải save cả 2 bên Entity)
+        List<UserEntity> userEntities1 = userRepository.findAllByIdIn(assignmentBuildingDTO.getStaffIds());
+
+        // Save bên user (staff)
+        for(UserEntity userEntity : userEntities1){
+            List<BuildingEntity> buildingEntities = userEntity.getBuildings();
+            buildingEntities.add(buildingEntity);
+            userEntity.setBuildings(buildingEntities);
+
+            userRepository.save(userEntity);
+        }
+
+        buildingEntity.setStaffs(userEntities1);
+
+        buildingRepository.save(buildingEntity);
+
+        return "Cập nhật giao thành công!";
     }
 }

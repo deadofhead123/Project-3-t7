@@ -4,7 +4,6 @@ import com.javaweb.model.dto.AssignmentBuildingDTO;
 import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
-import com.javaweb.service.impl.AssignmentBuildingService;
 import com.javaweb.service.impl.BuildingService;
 import com.javaweb.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ import java.util.stream.Collectors;
 public class BuildingAPI {
     @Autowired
     private BuildingService buildingService;
-
-    @Autowired
-    private AssignmentBuildingService assignmentBuildingService;
 
     @Autowired
     private UserService userService;
@@ -74,7 +70,7 @@ public class BuildingAPI {
         ResponseDTO responseDTO = new ResponseDTO();
 
         try {
-            responseDTO.setMessage(assignmentBuildingService.updateAssignmentBuilding(assignmentBuildingDTO));
+            responseDTO.setMessage(buildingService.updateAssignmentBuilding(assignmentBuildingDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

@@ -28,4 +28,5 @@ public interface IUserService {
 
     Map<Long, String> allStaff();
     List<StaffResponseDTO> loadStaffs(Long buildingId);
+
 }

@@ -102,6 +102,6 @@ public class BuildingEntity extends BaseEntity {
     @OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY)
     private List<RentAreaEntity> rentAreaEntities = new ArrayList<RentAreaEntity>();
 
-    @OneToMany(mappedBy = "buildings", fetch = FetchType.LAZY)
-    private List<AssignmentBuildingEntity> assignmentBuildingEntities = new ArrayList<>();
+    @ManyToMany(mappedBy = "buildings", fetch = FetchType.LAZY)
+    private List<UserEntity> staffs = new ArrayList<>();
 }

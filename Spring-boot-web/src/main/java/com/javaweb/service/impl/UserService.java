@@ -2,7 +2,6 @@ package com.javaweb.service.impl;
 
 import com.javaweb.constant.SystemConstant;
 import com.javaweb.converter.UserConverter;
-import com.javaweb.entity.BuildingEntity;
 import com.javaweb.entity.RoleEntity;
 import com.javaweb.entity.UserEntity;
 import com.javaweb.exception.MyException;
@@ -22,7 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -198,11 +200,8 @@ public class UserService implements IUserService {
         // Lấy ra các nhân viên có role là staff
         List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF"); // role_id = 2 là staff
 
-        // Lấy ra tòa nhà có id được gửi xuống
-        BuildingEntity buildingEntity = buildingRepository.getOne(buildingId);
-
         // Lọc các nhân viên đang quản lý tòa nhà
-        List<UserEntity> assignedStaffs = userRepository.findByAssignmentBuildings_Buildings(buildingEntity); // Lấy trong bảng assignmentbuilding
+        List<UserEntity> assignedStaffs = userRepository.findAllByBuildings_Id(buildingId); // Lấy trong bảng assignmentbuilding
 
         List<StaffResponseDTO> staffResponseDTOs = new ArrayList<>();
 
@@ -221,4 +220,5 @@ public class UserService implements IUserService {
 
         return staffResponseDTOs;
     }
+
 }

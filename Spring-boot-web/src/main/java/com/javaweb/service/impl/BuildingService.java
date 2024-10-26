@@ -35,6 +35,7 @@ public class BuildingService implements IBuildingService {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -102,23 +103,9 @@ public class BuildingService implements IBuildingService {
     // Xóa các building theo id
     @Override
     public String deleteBuilding(Long[] listId) {
-        List<BuildingEntity> buildingEntities = buildingRepository.findByIdIn(listId);
-
-        // Để xóa các building thì phải xóa chúng trong bảng rentarea trước để tránh lỗi
-        rentAreaRepository.deleteByBuildingEntityIn(buildingEntities);
-
-        // Cũng cần phải xóa trong assignmentbuilding nữa
-        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
-
-        for(UserEntity userEntity : userEntities){
-            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
-            buildingEntities1.removeAll(buildingEntities);
-
-            userEntity.setBuildings(buildingEntities1);
-
-            userRepository.save(userEntity);
-        }
-
+        // - Khi chưa sử dụng Cascade, muốn xóa các building có id cần truyền vào
+        //   ta phải xóa building trong bảng rentarea và assignmentbuilding trước vì 2 bảng này có tham chiếu tới building, rồi mới xóa các building đó trong bảng id
+        // - Giờ đã dùng Cascade thì nó sẽ làm sẵn việc xóa building trong bảng rentarea và assignmentbuilding trước
         // Xóa
         buildingRepository.deleteByIdIn(listId);
 
@@ -127,35 +114,28 @@ public class BuildingService implements IBuildingService {
 
     @Override
     public String updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO) {
-        Long id = assignmentBuildingDTO.getBuildingId();
-
-        BuildingEntity buildingEntity = buildingRepository.getOne(id);
+        BuildingEntity buildingEntity = buildingRepository.getOne(assignmentBuildingDTO.getBuildingId());
 
         // Xóa phần giao cũ đi để tránh bị trùng
         List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+        List<UserEntity> userEntityAssigning = userRepository.findByIdIn(assignmentBuildingDTO.getStaffIds());
 
         for(UserEntity userEntity : userEntities){
-            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
-            buildingEntities1.remove(buildingEntity);
-
-            userEntity.setBuildings(buildingEntities1);
-
-            userRepository.save(userEntity);
-        }
-
-        // ------------------------------ Thêm phần giao mới (Phải save cả 2 bên Entity)
-        List<UserEntity> userEntities1 = userRepository.findAllByIdIn(assignmentBuildingDTO.getStaffIds());
-
-        // Save bên user (staff)
-        for(UserEntity userEntity : userEntities1){
             List<BuildingEntity> buildingEntities = userEntity.getBuildings();
-            buildingEntities.add(buildingEntity);
+
+            if(userEntityAssigning.contains(userEntity)){
+                if(!buildingEntities.contains(buildingEntity)) buildingEntities.add(buildingEntity);
+            }
+            else{
+                buildingEntities.remove(buildingEntity);
+            }
+
             userEntity.setBuildings(buildingEntities);
 
             userRepository.save(userEntity);
         }
 
-        buildingEntity.setStaffs(userEntities1);
+        buildingEntity.setStaffs(userEntityAssigning);
 
         buildingRepository.save(buildingEntity);
 

@@ -40,7 +40,7 @@ public class UserEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     private List<RoleEntity> roles = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "assignmentbuilding",
             joinColumns = @JoinColumn(name = "staffid", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "buildingid", nullable = false))

@@ -88,7 +88,7 @@ public class BuildingEntity extends BaseEntity {
     private String map;
 
     @Column(name = "avatar")
-    private String avatar;
+    private String image;
 
     @Column(name = "managername")
     private String managerName;

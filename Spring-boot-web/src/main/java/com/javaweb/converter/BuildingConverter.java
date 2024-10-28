@@ -36,6 +36,8 @@ public class BuildingConverter {
         // Sử dụng Model Mapper để copy các field giống nhau trong BuildingEntity sang BuildingResponseDTO
         BuildingDTO new_building = modelMapper.map(ele, BuildingDTO.class);
 
+        new_building.setImage(ele.getImage());
+
         new_building.setTypeCode(Arrays.asList(ele.getType().split(",")));
 
         // Xem class RentAreaEntity và RentAreaRepositoryImpl để biết thêm

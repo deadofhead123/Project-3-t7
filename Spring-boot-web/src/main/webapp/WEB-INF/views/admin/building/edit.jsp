@@ -1,5 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -109,8 +109,8 @@
                         <div class="form-group">
                             <label class="col-xs-3">Số tầng hầm</label>
                             <div class="col-xs-9">
-<%--                                <input type="number" name="numberOfBasement" id="numberOfBasement"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="number" name="numberOfBasement" id="numberOfBasement"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="numberOfBasement" class="form-control"/>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Diện tích sàn</label>
                             <div class="col-xs-9">
-<%--                                <input type="number" name="floorArea" id="floorArea" class="form-control">--%>
+                                    <%--                                <input type="number" name="floorArea" id="floorArea" class="form-control">--%>
                                 <form:input path="floorArea" class="form-control"/>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Giá thuê</label>
                             <div class="col-xs-9">
-<%--                                <input type="number" name="rentPrice" id="rentPrice" class="form-control">--%>
+                                    <%--                                <input type="number" name="rentPrice" id="rentPrice" class="form-control">--%>
                                 <form:input path="rentPrice" class="form-control"/>
                             </div>
                         </div>
@@ -319,7 +319,7 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tên quản lý</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="managerName" id="managerName" class="form-control">--%>
+                                    <%--                                <input type="text" name="managerName" id="managerName" class="form-control">--%>
                                 <form:input path="managerName" class="form-control"/>
                             </div>
                         </div>
@@ -328,9 +328,29 @@
                         <div class="form-group">
                             <label class="col-xs-3">SĐT quản lý</label>
                             <div class="col-xs-9">
-<%--                                <input type="text" name="managerPhoneNumber" id="managerPhoneNumber"--%>
-<%--                                       class="form-control">--%>
+                                    <%--                                <input type="text" name="managerPhoneNumber" id="managerPhoneNumber"--%>
+                                    <%--                                       class="form-control">--%>
                                 <form:input path="managerPhoneNumber" class="form-control"/>
+                            </div>
+                        </div>
+
+                        <!--avatar-->
+                        <div class="form-group">
+                            <label class="col-sm-3 no-padding-right">Hình đại diện</label>
+                            <input class="col-sm-3 no-padding-right" type="file" id="uploadImage"/>
+                            <div class="col-sm-9">
+                                <!--Cũng giống cái nút Thêm và sửa thông tin, khi building chưa được tạo thì ko có ảnh, và nếu được tạo rồi thì có ảnh-->
+                                <!--Hiện ảnh đại diện từ tòa nhà đã tồn tại-->
+                                <c:if test="${not empty buildingEdit.image}">
+                                    <c:set var="imagePath" value="/repository${buildingEdit.image}"/>
+                                    <img src="${imagePath}" id="viewImage" width="300px" height="300px" style="margin-top: 50px">
+                                </c:if>
+
+                                <!--Hiện ảnh đại diện mặc định-->
+                                <c:if test="${empty buildingEdit.image}">
+                                    Default:
+                                    <img src="/admin/image/default.png" id="viewImage" width="300px" height="300px">
+                                </c:if>
                             </div>
                         </div>
 
@@ -345,11 +365,15 @@
                                        + Khi thêm thì gửi id xuống
                                        -> Ta dựa vào đó xây dựng điều kiện hiển thị nút Thêm và nút Sửa -->
                                 <c:if test="${empty buildingEdit.id}">
-                                    <button type="button" class="btn btn-primary" id="btnAddOrUpdateBuilding">Thêm tòa nhà</button>
+                                    <button type="button" class="btn btn-primary" id="btnAddOrUpdateBuilding">Thêm tòa
+                                        nhà
+                                    </button>
                                 </c:if>
 
                                 <c:if test="${not empty buildingEdit.id}">
-                                    <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông tin</button>
+                                    <button type="button" class="btn btn-warning" id="btnAddOrUpdateBuilding">Sửa thông
+                                        tin
+                                    </button>
                                 </c:if>
 
                                 <button type="reset" class="btn btn-default">Xóa thông tin</button>
@@ -376,28 +400,65 @@
 </a>
 
 <script>
-    // Hàm test dữ liệu
+    var imageBase64 = '';
+    var imageName = '';
+
+    /*
+    ------------------------------------------------- Thêm mới hoặc cập nhật thông tin tòa nhà -------------------------------------------------
+     */
     $("#btnAddOrUpdateBuilding").click(function () {
-        var formData = $("#form-edit").serializeArray(); // serializeArray(): Khởi tạo 1 mảng chứa các object-->
-        var json = {};
-        var typeCode = [];
+        if (confirm("Xác nhận các thông tin chính xác?")) {
+            var formData = $("#form-edit").serializeArray(); // serializeArray(): Khởi tạo 1 mảng chứa các object-->
+            var json = {};
+            var typeCode = [];
 
-        // function(i, v): i là chỉ số, v là kiểu dữ liệu của phần tử tại chỉ số đó
-        $.each(formData, function (i, v) {
-            // Nếu không lưu type code vào 1 mảng thì khi tích nhiều, sẽ chỉ lưu được 1 giá trị
-            if (v.name == "typeCode") typeCode.push(v.value);
-            else if(v.name == "buildingDTOs") v.value = [];
-            else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
-        });
+            // function(i, v): i là chỉ số, v là kiểu dữ liệu của phần tử tại chỉ số đó
+            $.each(formData, function (i, v) {
+                // Nhận đường dẫn hình ảnh
+                if ('' !== imageBase64) {
+                    json['imageBase64'] = imageBase64;
+                    json['imageName'] = imageName;
+                }
 
-        json['typeCode'] = typeCode;
+                // Nếu không lưu type code vào 1 mảng thì khi tích nhiều, sẽ chỉ lưu được 1 giá trị
+                if (v.name == "typeCode") typeCode.push(v.value);
+                else if (v.name == "buildingDTOs") v.value = [];
+                else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
+            });
 
-        console.log(json);
+            json['typeCode'] = typeCode;
+            openImage(this, $("imagePath"));
+            console.log(json);
+            console.log($('#imagePath'))
 
-        if(confirm("Xác nhận các thông tin chính xác?")){
             addOrUpdateBuilding(json);
         }
     });
+
+    /*
+    ----------- Upload ảnh -----------
+     */
+
+    $('#uploadImage').change(function (event) {
+        var reader = new FileReader();
+        var file = $(this)[0].files[0];
+        reader.onload = function (e) {
+            imageBase64 = e.target.result;
+            imageName = file.name; // Tên hình không dấu, khoảng trắng. Ví dụ: a-b-c
+        };
+        reader.readAsDataURL(file);
+        openImage(this, "viewImage");
+    });
+
+    function openImage(input, imageView) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#' + imageView).attr('src', reader.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
     // Hàm cho nút "Thêm tòa nhà"
     // Hàm gửi dữ liệu xuống cho server
@@ -408,23 +469,16 @@
             data: JSON.stringify(json),
             contentType: 'application/json',
             dataType: 'JSON',
-            success: function(result){
+            success: function (result) {
                 console.log(result);
                 alert(result.message);
 
                 // Thay đổi url để chuyển hướng tới url ta muốn
                 location.replace("/admin/building-list");
             },
-            error: function(result){
+            error: function (result) {
                 console.log(result);
-
-                var row = '';
-
-                $.each(result.responseJSON.details, function(index, item){
-                   row += item + "\n";
-                });
-
-                alert(row);
+                alert(result.responseJSON.details);
             }
         });
     }

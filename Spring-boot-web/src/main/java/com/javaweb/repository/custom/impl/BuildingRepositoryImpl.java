@@ -3,6 +3,7 @@ package com.javaweb.repository.custom.impl;
 import com.javaweb.entity.BuildingEntity;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.repository.custom.BuildingRepositoryCustom;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,7 +13,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 @Repository
-public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
+public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -147,9 +148,9 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
 
     // ---------------------------------------------------------------------- Hàm xử lí chính
     @Override
-    public List<BuildingEntity> findAll(BuildingSearchRequest buildingSearchRequest) {
+    public List<BuildingEntity> findAll(BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
         // Câu lệnh sql
-        StringBuilder sql = new StringBuilder("SELECT b.* FROM building b");
+        StringBuilder sql = new StringBuilder(buildQueryFilter());
         StringBuilder join = new StringBuilder("");
         StringBuilder where = new StringBuilder(" WHERE 1=1");
 
@@ -158,8 +159,13 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         queryWhereNormal(buildingSearchRequest, where);
         queryWhereSpecial(buildingSearchRequest, where);
 
+
         // Kết hợp các thành phần của câu query lại
         sql.append(join).append(where).append(" GROUP BY b.id");
+
+        if( buildingSearchRequest.getStaffId() != null ){
+            sql.append(", asmbld.id");
+        }
 
         // In ra câu query để check
         System.out.println(sql);
@@ -171,4 +177,15 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         return query.getResultList();
     }
 
+    @Override
+    public int countTotalItems(){
+        String sql = buildQueryFilter();
+        Query query = entityManager.createNativeQuery(sql.toString());
+        return query.getResultList().size();
+    }
+
+    private String buildQueryFilter() {
+        String sql = "SELECT * FROM building b";
+        return sql;
+    }
 }

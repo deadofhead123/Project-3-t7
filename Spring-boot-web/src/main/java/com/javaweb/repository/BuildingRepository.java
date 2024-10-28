@@ -1,7 +1,6 @@
 package com.javaweb.repository;
 
 import com.javaweb.entity.BuildingEntity;
-import com.javaweb.entity.UserEntity;
 import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -26,5 +25,4 @@ public interface BuildingRepository extends JpaRepository<BuildingEntity, Long>,
     void deleteByIdIn(Long[] ids);
 
     List<BuildingEntity> findByIdIn(Long[] ids);
-    List<UserEntity> findAllByStaffs_IdIn(List<Long> staffIds);
 }

@@ -1,5 +1,7 @@
 package com.javaweb.controller.web;
 
+import com.javaweb.model.request.BuildingSearchRequest;
+import com.javaweb.utils.DistrictCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -17,12 +19,12 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
 
 	@RequestMapping(value = "/trang-chu", method = RequestMethod.GET)
-//	public ModelAndView homePage(BuildingSearchRequest buildingSearchRequest, HttpServletRequest request) {
-//		ModelAndView mav = new ModelAndView("web/home");
-//        mav.addObject("modelSearch", buildingSearchRequest);
-//        mav.addObject("districts", DistrictCode.type());
-//		return mav;
-//	}
+	public ModelAndView homePage(BuildingSearchRequest buildingSearchRequest, HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("web/home");
+        mav.addObject("modelSearch", buildingSearchRequest);
+        mav.addObject("districts", DistrictCode.type());
+		return mav;
+	}
 
     @GetMapping(value="/gioi-thieu")
     public ModelAndView introducceBuiding(){

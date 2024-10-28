@@ -15,6 +15,7 @@ import com.javaweb.service.IBuildingService;
 import com.javaweb.utils.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,9 +41,9 @@ public class BuildingService implements IBuildingService {
     private UserRepository userRepository;
 
     @Override
-    public List<BuildingSearchResponse> findAll(BuildingSearchRequest buildingSearchRequest) {
+    public List<BuildingSearchResponse> findAll(BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
         // Xuống tầng repo lấy các BuildingEntity
-        List<BuildingEntity> buildingEntities = buildingRepository.findAll(buildingSearchRequest);
+        List<BuildingEntity> buildingEntities = buildingRepository.findAll(buildingSearchRequest, pageable);
 
         // Xử lí đối tượng trả ra
         List<BuildingSearchResponse> buildingSearchResponses = new ArrayList<>();
@@ -107,6 +108,22 @@ public class BuildingService implements IBuildingService {
         //   ta phải xóa building trong bảng rentarea và assignmentbuilding trước vì 2 bảng này có tham chiếu tới building, rồi mới xóa các building đó trong bảng id
         // - Giờ đã dùng Cascade thì nó sẽ làm sẵn việc xóa building trong bảng rentarea và assignmentbuilding trước
         // Xóa
+        List<BuildingEntity> buildingEntities = buildingRepository.findByIdIn(listId);
+
+        rentAreaRepository.deleteByBuildingEntityIn(buildingEntities);
+
+        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+
+        for(UserEntity userEntity : userEntities){
+            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
+
+            buildingEntities1.removeAll(buildingEntities);
+
+            userEntity.setBuildings(buildingEntities1);
+
+            userRepository.save(userEntity);
+        }
+        
         buildingRepository.deleteByIdIn(listId);
 
         return "Xóa thành công!";
@@ -140,5 +157,10 @@ public class BuildingService implements IBuildingService {
         buildingRepository.save(buildingEntity);
 
         return "Cập nhật giao thành công!";
+    }
+
+    @Override
+    public int countTotalItems() {
+        return buildingRepository.countTotalItems();
     }
 }

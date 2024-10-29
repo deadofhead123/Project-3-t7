@@ -8,9 +8,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
-    <title>Thêm tòa nhà</title>
+    <title>Tùy chỉnh tòa nhà</title>
 </head>
 <body>
 <div class="main-content">
@@ -44,7 +45,7 @@
             <!--Thông tin tòa nhà-->
             <div class="row">
                 <div class="col-xs-12">
-                    <form:form method="get" id="form-edit" modelAttribute="buildingEdit">
+                    <form:form method="get" id="form-edit" modelAttribute="buildingEdit" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="${buildingEdit.id}"/>
                         <!--name building-->
                         <div class="form-group">
@@ -423,12 +424,12 @@
                 // Nếu không lưu type code vào 1 mảng thì khi tích nhiều, sẽ chỉ lưu được 1 giá trị
                 if (v.name == "typeCode") typeCode.push(v.value);
                 else if (v.name == "buildingDTOs") v.value = [];
+                else if(v.name == "image") json['image'] = v.value;
                 else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
             });
             json['typeCode'] = typeCode;
 
             console.log(json);
-            console.log($('#imagePath'))
 
             addOrUpdateBuilding(json);
         }

@@ -70,63 +70,34 @@ public class BuildingService implements IBuildingService {
         return buildingDTO;
     }
 
-//    public BuildingDTO save(BuildingDTO buildingDTO) {
-//        Long buildingId = buildingDTO.getId();
-//
-//        BuildingEntity buildingEntity = buildingConverter.convertToEntity(buildingDTO);
-//
-//        if (buildingId != null) { // update
-//            BuildingEntity foundBuilding = buildingRepository.findById(buildingId)
-//                    .orElseThrow(() -> new NotFoundException("Building not found!"));
-//            buildingEntity.setImage(foundBuilding.getImage());
-//        }
-//        saveThumbnail(buildingDTO, buildingEntity);
-//
-//        return buildingConverter.convertToDto(buildingRepository.save(buildingEntity));
-//    }
-
     @Override
     public String addOrUpdateBuilding(BuildingDTO building) {
-        BuildingEntity editBuilding = new BuildingEntity();
-        String result = "";
+        BuildingEntity editBuilding = buildingConverter.convertToEntity(building);
 
-        // Thêm tòa nhà thì ko có id, còn cập nhật thì có
-        if (building.getId() == null) {
-            result = "Thêm mới thành công!";
-        } else {
-            editBuilding = buildingRepository.getOne(building.getId());
-
-            // Xóa các rentArea cũ để tránh bị trùng
-            rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
-
-            result = "Cập nhật thành công!";
-        }
-
-        // Gắn dữ liệu sang Entity
-        editBuilding = modelMapper.map(building, BuildingEntity.class);
-
-        // Lưu ảnh vào máy (phải lưu sau vì lúc này buildingDTO mới có dữ liệu ảnh :)) )
+        // Lưu ảnh vào máy
         saveThumbnail(building, editBuilding);
-
-        // Gắn Type
-        editBuilding.setType(String.join(",", building.getTypeCode()));
 
         // Lưu xuống CSDL
         buildingRepository.save(editBuilding);
 
-        // Lưu các rentArea của tòa nhà
+        // Xử lý rentArea của tòa nhà
         for (String it : building.getRentArea().split(",")) {
             if (StringUtils.check(it)) {
                 RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
-                rentAreaEntity.setBuildingEntity(editBuilding);
                 rentAreaEntity.setValue(Integer.parseInt(it));
+                rentAreaEntity.setBuildingEntity(editBuilding);
 
                 rentAreaRepository.save(rentAreaEntity);
             }
         }
 
-        return result;
+        // Thêm tòa nhà thì ko có id, còn cập nhật thì có
+        if (building.getId() == null) {
+            return "Thêm mới thành công!";
+        } else {
+            return "Cập nhật thành công!";
+        }
     }
 
     // Xóa các building theo id

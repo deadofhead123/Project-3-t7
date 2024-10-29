@@ -99,7 +99,7 @@ public class BuildingEntity extends BaseEntity {
     @Column(name = "type")
     private String type;
 
-    @OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<RentAreaEntity> rentAreaEntities = new ArrayList<RentAreaEntity>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

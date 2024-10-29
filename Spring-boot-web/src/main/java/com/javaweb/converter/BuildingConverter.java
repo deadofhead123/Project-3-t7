@@ -46,4 +46,14 @@ public class BuildingConverter {
 
         return new_building;
     }
+
+    public BuildingEntity convertToEntity(BuildingDTO dto) {
+        // Map dữ liệu sang Entity
+        BuildingEntity buildingEntity = modelMapper.map(dto, BuildingEntity.class);
+
+        // Gắn Type
+        buildingEntity.setType(String.join(",", dto.getTypeCode()));
+
+        return buildingEntity;
+    }
 }

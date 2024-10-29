@@ -66,13 +66,20 @@ public class BuildingDTO extends AbstractDTO{
     private String serviceFee;
     private double brokerageFee;
 
-    @NotBlank(message = "Phải có ảnh đại diện của tòa nhà")
     private String image;
-
     private String imageBase64;
+
+    @NotBlank(message = "Phải có ảnh đại diện của tòa nhà!")
     private String imageName;
     private String waterFee;
     private String map;
 
     private Map<String, String> buildingDTOs = new HashMap<>();
+
+    public String getImageBase64() {
+        if (imageBase64 != null) {
+            return imageBase64.split(",")[1];
+        }
+        return null;
+    }
 }

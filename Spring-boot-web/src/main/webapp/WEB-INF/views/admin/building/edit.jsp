@@ -425,9 +425,8 @@
                 else if (v.name == "buildingDTOs") v.value = [];
                 else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
             });
-
             json['typeCode'] = typeCode;
-            openImage(this, $("imagePath"));
+
             console.log(json);
             console.log($('#imagePath'))
 
@@ -478,7 +477,14 @@
             },
             error: function (result) {
                 console.log(result);
-                alert(result.responseJSON.details);
+
+                var row = "";
+
+                $.each(result.responseJSON.details, function (index, item){
+                    row += item + "\n";
+                });
+
+                alert(row);
             }
         });
     }

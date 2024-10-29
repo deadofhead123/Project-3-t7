@@ -102,6 +102,9 @@ public class BuildingEntity extends BaseEntity {
     @OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RentAreaEntity> rentAreaEntities = new ArrayList<RentAreaEntity>();
 
-    @ManyToMany(mappedBy = "buildings", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "assignmentbuilding",
+            joinColumns = @JoinColumn(name = "buildingid", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "staffid", nullable = false))
     private List<UserEntity> staffs = new ArrayList<>();
 }

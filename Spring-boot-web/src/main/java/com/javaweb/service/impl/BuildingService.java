@@ -105,7 +105,7 @@ public class BuildingService implements IBuildingService {
         // Gắn dữ liệu sang Entity
         editBuilding = modelMapper.map(building, BuildingEntity.class);
 
-        // Lưu ảnh vào máy
+        // Lưu ảnh vào máy (phải lưu sau vì lúc này buildingDTO mới có dữ liệu ảnh :)) )
         saveThumbnail(building, editBuilding);
 
         // Gắn Type
@@ -136,22 +136,6 @@ public class BuildingService implements IBuildingService {
         //   ta phải xóa building trong bảng rentarea và assignmentbuilding trước vì 2 bảng này có tham chiếu tới building, rồi mới xóa các building đó trong bảng id
         // - Giờ đã dùng Cascade thì nó sẽ làm sẵn việc xóa building trong bảng rentarea và assignmentbuilding trước
         // Xóa
-        List<BuildingEntity> buildingEntities = buildingRepository.findByIdIn(listId);
-
-        rentAreaRepository.deleteByBuildingEntityIn(buildingEntities);
-
-        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
-
-        for (UserEntity userEntity : userEntities) {
-            List<BuildingEntity> buildingEntities1 = userEntity.getBuildings();
-
-            buildingEntities1.removeAll(buildingEntities);
-
-            userEntity.setBuildings(buildingEntities1);
-
-            userRepository.save(userEntity);
-        }
-
         buildingRepository.deleteByIdIn(listId);
 
         return "Xóa thành công!";
@@ -161,26 +145,13 @@ public class BuildingService implements IBuildingService {
     public String updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO) {
         BuildingEntity buildingEntity = buildingRepository.getOne(assignmentBuildingDTO.getBuildingId());
 
-        // Xóa phần giao cũ đi để tránh bị trùng
-        List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+        // Tìm ra các staff được giao quản lý tòa nhà này
         List<UserEntity> userEntityAssigning = userRepository.findByIdIn(assignmentBuildingDTO.getStaffIds());
 
-        for (UserEntity userEntity : userEntities) {
-            List<BuildingEntity> buildingEntities = userEntity.getBuildings();
-
-            if (userEntityAssigning.contains(userEntity)) {
-                if (!buildingEntities.contains(buildingEntity)) buildingEntities.add(buildingEntity);
-            } else {
-                buildingEntities.remove(buildingEntity);
-            }
-
-            userEntity.setBuildings(buildingEntities);
-
-            userRepository.save(userEntity);
-        }
-
+        // Giao
         buildingEntity.setStaffs(userEntityAssigning);
 
+        // Cập nhật tòa nhà vào CSDL
         buildingRepository.save(buildingEntity);
 
         return "Cập nhật giao thành công!";

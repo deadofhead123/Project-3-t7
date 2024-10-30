@@ -88,7 +88,7 @@ public class BuildingEntity extends BaseEntity {
     private String map;
 
     @Column(name = "avatar")
-    private String image;
+    private String avatar;
 
     @Column(name = "managername")
     private String managerName;
@@ -102,7 +102,7 @@ public class BuildingEntity extends BaseEntity {
     @OneToMany(mappedBy = "buildingEntity", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<RentAreaEntity> rentAreaEntities = new ArrayList<RentAreaEntity>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "assignmentbuilding",
             joinColumns = @JoinColumn(name = "buildingid", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "staffid", nullable = false))

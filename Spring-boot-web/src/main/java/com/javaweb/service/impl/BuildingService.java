@@ -15,7 +15,6 @@ import com.javaweb.service.IBuildingService;
 import com.javaweb.utils.StringUtils;
 import com.javaweb.utils.UploadFileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,9 +35,6 @@ public class BuildingService implements IBuildingService {
 
     @Autowired
     private RentAreaRepository rentAreaRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -72,19 +68,22 @@ public class BuildingService implements IBuildingService {
 
     @Override
     public String addOrUpdateBuilding(BuildingDTO building) {
-        BuildingEntity editBuilding = buildingConverter.convertToEntity(building);
+        BuildingEntity editBuilding = new BuildingEntity();
         String result = "";
 
         if (building.getId() == null) {
             result = "Thêm mới thành công!";
         } else {
+            // Tìm ra tòa nhà cũ
             editBuilding = buildingRepository.getOne(building.getId());
 
-            // Xóa rentArea cũ
-            rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
+            // Khi map dữ liệu thì rentArea cũ sẽ bị xóa luôn, ko cần gõ code xóa nữa
 
             result = "Cập nhật thành công!";
         }
+
+        // Map dữ liệu sang Entity (Chú ý khi map thì dữ liệu trong Entity định truyền dữ liệu tới sẽ bị xóa hết)
+        editBuilding = buildingConverter.convertToEntity(building, editBuilding);
 
         // Lưu ảnh vào máy
         saveThumbnail(building, editBuilding);
@@ -140,10 +139,10 @@ public class BuildingService implements IBuildingService {
     private void saveThumbnail(BuildingDTO buildingDTO, BuildingEntity buildingEntity) {
         String path = "/building/" + buildingDTO.getImageName();
 
-        if (null != buildingDTO.getImageBase64()) {
-            if (null != buildingEntity.getImage()) {
-                if (!path.equals(buildingEntity.getImage())) {
-                    File file = new File("C://home/office" + buildingEntity.getImage());
+        if ( buildingDTO.getImageBase64() != null ) {
+            if ( buildingEntity.getAvatar() != null ) {
+                if (!path.equals(buildingEntity.getAvatar())) {
+                    File file = new File("C://home/office" + buildingEntity.getAvatar());
                     file.delete();
                 }
             }
@@ -151,7 +150,7 @@ public class BuildingService implements IBuildingService {
             byte[] bytes = Base64.decodeBase64(buildingDTO.getImageBase64().getBytes());
 
             uploadFileUtils.writeOrUpdate(path, bytes);
-            buildingEntity.setImage(path);
+            buildingEntity.setAvatar(path);
         }
     }
 

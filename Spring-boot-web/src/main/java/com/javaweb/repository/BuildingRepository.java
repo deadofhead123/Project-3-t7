@@ -12,14 +12,8 @@ public interface BuildingRepository extends JpaRepository<BuildingEntity, Long>,
     //	 + Nếu cần tìm theo nhiều field thì nên tự build vì lúc đó mà viết cái tên hàm thì chắc dài cả cây số:))))
     List<BuildingEntity> findByNameContaining(String name);
 
-    // Tìm 1 tòa nhà
-//    BuildingEntity findOneBuildingById(long id);
-
     // - Tìm theo nhiều field
-//    List<BuildingEntity> findByNameContainingAndWardContaining(String name, String ward);
-
-    // - Tìm theo nhiều field (có cả field của Entity có quan hệ với Entity hiện tại
-//    List<BuildingEntity> findByNameContainingAndDistrict_NameContaining(String name, String district);
+    List<BuildingEntity> findByNameContainingAndWardContaining(String name, String ward);
 
     // Xóa hết các building có id trong danh sách này
     void deleteByIdIn(Long[] ids);

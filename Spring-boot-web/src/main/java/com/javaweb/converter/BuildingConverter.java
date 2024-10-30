@@ -36,7 +36,7 @@ public class BuildingConverter {
         // Sử dụng Model Mapper để copy các field giống nhau trong BuildingEntity sang BuildingResponseDTO
         BuildingDTO new_building = modelMapper.map(ele, BuildingDTO.class);
 
-        new_building.setImage(ele.getImage());
+        new_building.setImage(ele.getAvatar());
 
         new_building.setTypeCode(Arrays.asList(ele.getType().split(",")));
 
@@ -47,13 +47,14 @@ public class BuildingConverter {
         return new_building;
     }
 
-    public BuildingEntity convertToEntity(BuildingDTO dto) {
-        // Map dữ liệu sang Entity
-        BuildingEntity buildingEntity = modelMapper.map(dto, BuildingEntity.class);
+    public BuildingEntity convertToEntity(BuildingDTO dto, BuildingEntity oldBuilding) {
+        BuildingEntity newBuilding = modelMapper.map(dto, BuildingEntity.class);
 
-        // Gắn Type
-        buildingEntity.setType(String.join(",", dto.getTypeCode()));
+        newBuilding.setType(String.join(",", dto.getTypeCode()));
+        newBuilding.setStaffs(oldBuilding.getStaffs());
 
-        return buildingEntity;
+        if( dto.getImageBase64() == null ) newBuilding.setAvatar(oldBuilding.getAvatar());
+
+        return newBuilding;
     }
 }

@@ -42,13 +42,12 @@ public class BuildingAPI {
                 return ResponseEntity.badRequest().body(responseDTO);
             }
 
+            responseDTO.setMessage(buildingService.addOrUpdateBuilding(buildingDTO));
+
+            return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-
-        responseDTO.setMessage(buildingService.addOrUpdateBuilding(buildingDTO));
-
-        return ResponseEntity.ok().body(responseDTO);
     }
 
     // Lọc nhân viên đang quản lý tòa nhà

@@ -73,6 +73,18 @@ public class BuildingService implements IBuildingService {
     @Override
     public String addOrUpdateBuilding(BuildingDTO building) {
         BuildingEntity editBuilding = buildingConverter.convertToEntity(building);
+        String result = "";
+
+        if (building.getId() == null) {
+            result = "Thêm mới thành công!";
+        } else {
+            editBuilding = buildingRepository.getOne(building.getId());
+
+            // Xóa rentArea cũ
+            rentAreaRepository.deleteAllByBuildingEntity(editBuilding);
+
+            result = "Cập nhật thành công!";
+        }
 
         // Lưu ảnh vào máy
         saveThumbnail(building, editBuilding);
@@ -93,11 +105,7 @@ public class BuildingService implements IBuildingService {
         }
 
         // Thêm tòa nhà thì ko có id, còn cập nhật thì có
-        if (building.getId() == null) {
-            return "Thêm mới thành công!";
-        } else {
-            return "Cập nhật thành công!";
-        }
+        return result;
     }
 
     // Xóa các building theo id

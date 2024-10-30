@@ -424,7 +424,6 @@
                 // Nếu không lưu type code vào 1 mảng thì khi tích nhiều, sẽ chỉ lưu được 1 giá trị
                 if (v.name == "typeCode") typeCode.push(v.value);
                 else if (v.name == "buildingDTOs") v.value = [];
-                else if(v.name == "image") json['image'] = v.value;
                 else json["" + v.name + ""] = v.value; // json["'" + v.name + "'"] = v.value; là sai, còn sai như thế nào thì nháp ra giấy là hiểu
             });
             json['typeCode'] = typeCode;

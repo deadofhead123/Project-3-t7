@@ -68,8 +68,6 @@ public class BuildingDTO extends AbstractDTO{
 
     private String image;
     private String imageBase64;
-
-    @NotBlank(message = "Phải có ảnh đại diện của tòa nhà!")
     private String imageName;
     private String waterFee;
     private String map;

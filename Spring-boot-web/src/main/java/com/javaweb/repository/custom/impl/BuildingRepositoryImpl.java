@@ -159,7 +159,6 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         queryWhereNormal(buildingSearchRequest, where);
         queryWhereSpecial(buildingSearchRequest, where);
 
-
         // Kết hợp các thành phần của câu query lại
         sql.append(join).append(where).append(" GROUP BY b.id");
 

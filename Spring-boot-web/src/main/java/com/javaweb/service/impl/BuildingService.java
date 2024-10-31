@@ -70,7 +70,9 @@ public class BuildingService implements IBuildingService {
     public String addOrUpdateBuilding(BuildingDTO building) {
         BuildingEntity editBuilding = new BuildingEntity();
         String result = "";
+        List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 
+        // Thêm tòa nhà thì ko có id, còn cập nhật thì có
         if (building.getId() == null) {
             result = "Thêm mới thành công!";
         } else {
@@ -88,22 +90,33 @@ public class BuildingService implements IBuildingService {
         // Lưu ảnh vào máy
         saveThumbnail(building, editBuilding);
 
-        // Lưu xuống CSDL
-        buildingRepository.save(editBuilding);
-
         // Xử lý rentArea của tòa nhà
         for (String it : building.getRentArea().split(",")) {
             if (StringUtils.check(it)) {
                 RentAreaEntity rentAreaEntity = new RentAreaEntity();
 
                 rentAreaEntity.setValue(Integer.parseInt(it));
-                rentAreaEntity.setBuildingEntity(editBuilding);
 
-                rentAreaRepository.save(rentAreaEntity);
+                rentAreaEntities.add(rentAreaEntity);
             }
         }
 
-        // Thêm tòa nhà thì ko có id, còn cập nhật thì có
+        if(building.getId() != null){
+            // Lưu xuống CSDL
+            buildingRepository.save(editBuilding);
+
+            for (int i = 0 ; i < rentAreaEntities.size() ; i++) {
+                rentAreaEntities.get(i).setBuildingEntity(editBuilding);
+
+                rentAreaRepository.save(rentAreaEntities.get(i));
+            }
+        }
+        else{
+            editBuilding.setRentAreaEntities(rentAreaEntities);
+
+            buildingRepository.save(editBuilding);
+        }
+
         return result;
     }
 

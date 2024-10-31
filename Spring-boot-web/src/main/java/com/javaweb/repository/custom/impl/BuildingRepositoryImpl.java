@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -136,13 +137,17 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
 
         List<String> typeCode = buildingSearchRequest.getTypeCode();
 
-        // type code lúc này có dạng string nên phải or giữa các loại type code
-        if (typeCode != null && typeCode.size() != 0) {
-            for(int i = 0; i < typeCode.size(); i++) {
-                typeCode.set(i, " b.type LIKE '%" + typeCode.get(i) + "%'");
-            }
+        if(typeCode != null) {
+            List<String> typeCodeFind = new ArrayList<>(typeCode);
 
-            where.append(" AND EXISTS (SELECT * FROM building b WHERE " + String.join(" OR ", typeCode) + ")");
+            // type code lúc này có dạng string nên phải or giữa các loại type code
+            if (typeCodeFind != null && !typeCodeFind.isEmpty()) {
+                for(int i = 0; i < typeCodeFind.size(); i++) {
+                    typeCodeFind.set(i, " b.type LIKE '%" + typeCodeFind.get(i) + "%'");
+                }
+
+                where.append(" AND EXISTS (SELECT * FROM building b WHERE " + String.join(" OR ", typeCodeFind) + ")");
+            }
         }
     }
 

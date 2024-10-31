@@ -310,7 +310,7 @@
 
                                             <!--Nút xóa (reset hết các field tìm kiếm)-->
                                             <div class="col-xs-2">
-                                                <a href="/admin/building-list">
+                                                <a href="${formUrl}">
                                                     <button type="button" class="btn btn-sm btn-primary">Xóa
                                                     </button>
                                                 </a>

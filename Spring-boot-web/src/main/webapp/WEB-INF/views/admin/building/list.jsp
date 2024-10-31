@@ -305,6 +305,7 @@
                                                         Tìm kiếm
                                                     </button>
                                                 </div>
+
                                                 <!--Nút xóa (reset hết các field tìm kiếm)-->
                                                 <div class="col-xs-2">
                                                     <a href="/admin/building-list">

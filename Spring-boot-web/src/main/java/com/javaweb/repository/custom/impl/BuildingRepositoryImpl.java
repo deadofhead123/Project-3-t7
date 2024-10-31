@@ -146,7 +146,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
                     typeCodeFind.set(i, " b.type LIKE '%" + typeCodeFind.get(i) + "%'");
                 }
 
-                where.append(" AND EXISTS (SELECT * FROM building b WHERE " + String.join(" OR ", typeCodeFind) + ")");
+                where.append(" AND " + String.join(" OR ", typeCodeFind) + " ");
             }
         }
     }

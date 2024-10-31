@@ -53,7 +53,7 @@ public class BuildingController {
         BuildingSearchResponse buildingSearchResult = new BuildingSearchResponse();
 
         buildingSearchResult.setListResult(buildingSearchResponses);
-        buildingSearchResult.setTotalItems(buildingService.countTotalItems());
+        buildingSearchResult.setTotalItems(buildingSearchResponses.size());
 
         // Kết quả tìm kiếm
         modelAndView.addObject("buildingSearchResult", buildingSearchResult);

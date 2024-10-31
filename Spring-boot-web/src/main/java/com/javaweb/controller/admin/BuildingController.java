@@ -43,8 +43,8 @@ public class BuildingController {
 
         // Tham số thứ nhất là cái item trong file html, tham số thứ 2 là model định trả ra
         modelAndView.addObject("district", districtCode.type()); // "QUAN_1", "Quận 1"
-        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
         modelAndView.addObject("staffs", userService.allStaff());
+        modelAndView.addObject("rentType", buildingRentType.type()); // "NGUYEN_CAN", "Nguyên căn"
 
         DisplayTagUtils.of(request, params);
 

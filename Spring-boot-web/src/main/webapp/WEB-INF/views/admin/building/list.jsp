@@ -7,7 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/common/taglib.jsp" %>
-<%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <c:url var="formUrl" value="/admin/building-list"/>
 <html>
 <head>
@@ -308,6 +307,7 @@
                                                     Tìm kiếm
                                                 </button>
                                             </div>
+
                                             <!--Nút xóa (reset hết các field tìm kiếm)-->
                                             <div class="col-xs-2">
                                                 <a href="/admin/building-list">
@@ -544,7 +544,7 @@
     --------------------------------------------------- Tìm kiếm tòa nhà ---------------------------------------------------
      */
     // Nút tìm kiếm
-    $('#btnSearchBuilding').click(function (e) {
+    $('#btnSearchBuilding').click(function(e) {
         e.preventDefault();
 
         // Đẩy các tham số trong các ô lên URL, và gán chúng cho cái đối tượng để hứng (ModelAttribute)
@@ -555,8 +555,8 @@
     --------------------------------------------------- Xóa tòa nhà ---------------------------------------------------
      */
     // Xóa tất cả tòa được đánh dấu
-    $('#btnDeleteBuilding').click(function (e) {
-        // Ngăn các thao tác mặc định của trình duyệt (gửi tham số lên url...)
+    $('#btnDeleteBuilding').click(function(e) {
+        // Ngăn các thao tác mặc định của trình duyệt (Xóa dữ liệu trong checkbox, option...)
         e.preventDefault();
 
         // - Lấy ra id của tòa nhà để xóa
@@ -595,7 +595,6 @@
 
     // Gửi thông tin 1 hoặc các tòa nhà bị xóa về phía server
     function btnDeleteBuilding(data) {
-        console.log(data);
         $.ajax({
             // url: "http://localhost:8081/api/buildings"
             // Không cần thêm "http://localhost:8081" nữa vì mình đang xài server Tomcat thì nó cung cấp sẵn tên miền "http://localhost:8081" dồi
